@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Vrac
 {
@@ -30,6 +31,14 @@ namespace Vrac
             while (this.seuils[i] < d) 
                 i++;
 
+            //for (int k = 0; k < seuils.Count; k++)
+            //{
+            //    if (k == i)
+            //        seuils[k] *= 1.01;
+            //    else
+            //        seuils[k] *= 0.99;
+            //}
+
             return this.results[i];
         }
     }
@@ -46,21 +55,21 @@ namespace Vrac
         {
             S_Voisins = new Dictionary<TypeElementBiome, Distribution<TypeElementBiome>[][]>();
 
-            Distribution<TypeElementBiome> bcp_Terre = new Distribution<TypeElementBiome> 
-            { 
-                seuils = new List<double>() { 0.07d, 0.015d, 1.0d }, 
+            Distribution<TypeElementBiome> bcp_Terre = new Distribution<TypeElementBiome>
+            {
+                seuils = new List<double>() { 0.0d, 0.0015d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Sable, TypeElementBiome.Terre } 
             };
 
             Distribution<TypeElementBiome> bcp_Eau = new Distribution<TypeElementBiome> 
-            { 
-                seuils = new List<double>() { 0.05d, 0.15d, 1.0d }, 
+            {
+                seuils = new List<double>() { 0.0d, 0.0015d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Terre, TypeElementBiome.Sable, TypeElementBiome.Eau } 
             };
 
             Distribution<TypeElementBiome> bcp_Sable = new Distribution<TypeElementBiome>
             {
-                seuils = new List<double>() { 0.15d, 0.30d, 1.0d },
+                seuils = new List<double>() { 0.05d, 0.05d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre, TypeElementBiome.Sable }
             };
 
@@ -90,13 +99,13 @@ namespace Vrac
     public class World
     {
         private TypeElementBiome[][] _world;
+            Random r = new Random();
 
         public World()
         {
-            int l = 128;
+            int l = 8192;
             this._world = new TypeElementBiome[l][];
-            List<int[]> lstNouveauxVoisins;
-            List<int[]> lstTemp;
+            List<int[]> lstNouveauxVoisins = new List<int[]>();
 
             for (int i = 0; i < l; i++)
             {
@@ -109,25 +118,30 @@ namespace Vrac
 
             }
 
-            this._world[l / 2][l / 2] = TypeElementBiome.Terre;
+            Distribution<TypeElementBiome> d = new Distribution<TypeElementBiome>
+            {
+                seuils = new List<double>() { 0.1d, 1d },
+                results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre }
+            };
 
-            lstNouveauxVoisins = this.etendre(l / 2, l / 2);
+            for (int i = 0; i < 64; i++)
+            {
+                int x = r.Next(0, l);
+                int y = r.Next(0, l);
+
+                this._world[x][y] = d.get();
+
+                lstNouveauxVoisins.Add(new int[] {x , y});
+            }
 
             while (lstNouveauxVoisins.Count > 0)
             {
-                lstTemp = new List<int[]>();
+                int i = r.Next(0, lstNouveauxVoisins.Count);
+                
+                int[] coord = lstNouveauxVoisins[i];
+                lstNouveauxVoisins.RemoveAt(i);
 
-                foreach (int[] coord in lstNouveauxVoisins)
-                {
-                    lstTemp.AddRange(this.etendre(coord[0], coord[1]));
-                }
-
-                //Parallel.ForEach(lstNouveauxVoisins, coord =>
-                //{
-                //    lstTemp.AddRange(this.etendre(coord[0], coord[1]));
-                //});
-
-                lstNouveauxVoisins = lstTemp;
+                lstNouveauxVoisins.AddRange(this.etendre(coord[0], coord[1]));
             }
 
             // Là , il faut faire un peu de récursif pour que le spread ce passe comme ça :
@@ -165,12 +179,24 @@ namespace Vrac
                     if (offset_y == 0 && offset_x == 0)
                         continue;
 
+                    //if (x + offset_x > -1 && x + offset_x < this._world.Length
+                    //    && y + offset_y > -1 && y + offset_y < this._world[x].Length
+                    //    && this._world[x + offset_x][y + offset_y] == TypeElementBiome.Vide)
+                    //{
+                    //    this._world[x + offset_x][y + offset_y] = distrib[offset_x + 1][offset_y + 1].get();
+                    //    lstNouveauxVoisins.Add(new int[] { x + offset_x, y + offset_y });
+
+                    //    // DEBUG
+                    //    File.AppendAllText(@"Debug.txt", (x + offset_x) + " ; " + (y + offset_y) + Environment.NewLine);
+                    //}
+
                     if (x + offset_x > -1 && x + offset_x < this._world.Length
-                        && y + offset_y > -1 && y + offset_y < this._world[x].Length
-                        && this._world[x + offset_x][y + offset_y] == TypeElementBiome.Vide)
+                        && y + offset_y > -1 && y + offset_y < this._world[x].Length)
                     {
+                        if (this._world[x + offset_x][y + offset_y] == TypeElementBiome.Vide)
+                            lstNouveauxVoisins.Add(new int[] { x + offset_x, y + offset_y });
+
                         this._world[x + offset_x][y + offset_y] = distrib[offset_x + 1][offset_y + 1].get();
-                        lstNouveauxVoisins.Add(new int[] { x + offset_x, y + offset_y });
                     }
                 }
             }
