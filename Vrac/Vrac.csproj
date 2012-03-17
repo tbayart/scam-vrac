@@ -41,8 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenerateurCarte\Biomes\Biome_Continent2D.cs" />
+    <Compile Include="GenerateurCarte\Biomes\IBiome_Param.cs" />
+    <Compile Include="GenerateurCarte\Carte.cs" />
+    <Compile Include="GenerateurCarte\Distribution.cs" />
+    <Compile Include="GenerateurCarte\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Vrac.cs" />
+    <Compile Include="Tools\Coordonnees.cs" />
+    <Compile Include="Tools\Randomizer.cs" />
     <Compile Include="VracAgent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
