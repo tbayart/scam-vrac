@@ -26,8 +26,8 @@ namespace Vrac.GenerateurCarte.Biomes
 
             Distribution<TypeElementBiome> bcp_Terre = new Distribution<TypeElementBiome>
             {
-                seuils = new List<double>() { 0.0d, 0.0003d, 1.0d },
-                results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Sable, TypeElementBiome.Terre }
+                seuils = new List<double>() { 0.0003d, 0.0003d, 1.0d },
+                results = new List<TypeElementBiome>() { TypeElementBiome.Pierre, TypeElementBiome.Sable, TypeElementBiome.Terre }
             };
 
             Distribution<TypeElementBiome> bcp_Eau = new Distribution<TypeElementBiome>
@@ -40,6 +40,12 @@ namespace Vrac.GenerateurCarte.Biomes
             {
                 seuils = new List<double>() { 0.02d, 0.04d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre, TypeElementBiome.Sable }
+            };
+
+            Distribution<TypeElementBiome> bcp_Pierre = new Distribution<TypeElementBiome>
+            {
+                seuils = new List<double>() { 0.000001d, 0.0005d, 1.0d },
+                results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre, TypeElementBiome.Pierre }
             };
 
             // On définit le dictionnaire des distributions des voisins.
@@ -63,6 +69,13 @@ namespace Vrac.GenerateurCarte.Biomes
                     new [] {bcp_Sable, bcp_Sable, bcp_Sable},
                     new [] {bcp_Sable, null,      bcp_Sable},
                     new [] {bcp_Sable, bcp_Sable, bcp_Sable},
+                };
+
+            S_DistributionVoisins[TypeElementBiome.Pierre] = new[]
+                {
+                    new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
+                    new [] {bcp_Pierre, null,      bcp_Pierre},
+                    new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
                 };
         }
 

@@ -298,11 +298,13 @@ namespace Vrac.GenerateurCarte
                 case TypeElementBiome.Vide:
                     return Color.Black; //Transparent;
                 case TypeElementBiome.Terre:
-                    return Color.Brown;
+                    return Color.DarkGreen;
                 case TypeElementBiome.Eau:
                     return Color.Blue;
                 case TypeElementBiome.Sable:
                     return Color.SandyBrown;
+                case TypeElementBiome.Pierre:
+                    return Color.DarkGray;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
