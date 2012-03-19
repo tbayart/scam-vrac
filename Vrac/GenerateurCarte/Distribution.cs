@@ -8,28 +8,27 @@ namespace Vrac.GenerateurCarte
 {
     public class Distribution<T>
     {
-        public List<double> seuils;
-        public List<T> results;
+        public Dictionary<T, double> dicoSeuils;
 
-        //public Dictionary<double, T> 
+        public Distribution()
+        {
+            this.dicoSeuils = new Dictionary<T, double>();
+        }
 
         public T get()
         {
             double d = Randomizer.NextDouble();
-            int i = 0;
+            double sommeSeuils = 0;
 
-            while (this.seuils[i] < d)
-                i++;
+            foreach (T cle in this.dicoSeuils.Keys)
+            {
+                sommeSeuils += this.dicoSeuils[cle];
 
-            //for (int k = 0; k < seuils.Count; k++)
-            //{
-            //    if (k == i)
-            //        seuils[k] *= 1.01;
-            //    else
-            //        seuils[k] *= 0.99;
-            //}
+                if (d < sommeSeuils)
+                    return cle;
+            }
 
-            return this.results[i];
+            throw new Exception("Erreur !");
         }
     }
 }

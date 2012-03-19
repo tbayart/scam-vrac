@@ -9,6 +9,6 @@
         Terre,
         Sable,
         Eau,
-        Pierre,
+        Pierre
     }
 }
