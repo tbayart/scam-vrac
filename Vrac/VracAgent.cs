@@ -10,19 +10,42 @@ namespace VracAgent
     {
         public Arbre_Move()
         {
+            Handler = e => move(e);
+            IsForwarder = fwd;
+            IsHandler = isHandler;
+        }
 
+        private bool fwd(Evenement e)
+        {
+            return false;
+        }
+
+        private void move(Evenement e)
+        {
+            Random r = new Random();
+            int x = x + r.Next(-3,3);
+            int y = x + r.Next(-3, 3);
+            Action.Teleport.doIt(this, new int[]{ });
+        }
+
+        private bool isHandler(Evenement e)
+        {
+            return true;
         }
     }
+
     public class Arbre : Agent
     {
         public Arbre()
         {
-
+            chaine = new Arbre_Move();
         }
+
     }
 
     public class Agent
     {
+        public int x, y;
         public Behavior chaine;
         public SortedList obj;
         public Dictionary<Action, Capacity> abilit;
@@ -43,7 +66,7 @@ namespace VracAgent
 
         public void Receive(Evenement e)
         {
-            chaine.handle(e);
+            chaine.handleOrLetTheNextDoIt(e);
         }
 
         public void Send(Evenement e)
@@ -68,14 +91,16 @@ namespace VracAgent
 
     public class Behavior
     {
-        public delegate void handle(Evenement e);
+        public Action<Evenement> Handler;
+        public Func<Evenement,bool> IsHandler;
+        public Func<Evenement,bool> IsForwarder;
 
         // Chain of Responsability
         public Behavior next;
 
         public void handleOrLetTheNextDoIt(Evenement e)
         {
-            if (isHandle(e))
+            if (isHandler(e))
             {
                 handle(e);
                 if (isForwarder(e))
@@ -84,31 +109,29 @@ namespace VracAgent
             else
                 letTheNextDoIt(e);
         }
-        public void letTheNextDoIt(Evenement e)
+        private void letTheNextDoIt(Evenement e)
         {
             if (next == null) return;
             next.handleOrLetTheNextDoIt(e);
         }
 
-        // A surcharger : 
 
-        protected virtual void handle(Evenement e)
+        private void handle(Evenement e)
         {
-
+            if (Handler != null)
+                Handler(e);
         }
 
-        protected virtual bool isHandle(Evenement e)
+        private bool isHandler(Evenement e)
         {
-            return false;
+            return this.IsHandler != null && IsHandler(e);
         }
 
-        protected virtual bool isForwarder(Evenement e)
+        private bool isForwarder(Evenement e)
         {
-            return false;
+            return this.IsForwarder != null && IsForwarder(e);
         }
 
-        public static Behavior BehJour = new Behavior() { /*do smthg*/ };
-        public static Behavior BehNuit = new Behavior() { /*do smthg*/ };
     }
 
     public class Capacity
@@ -134,6 +157,15 @@ namespace VracAgent
             doIt = (agt, v) =>
             {
                 agt.carac["Faim"].valeur -= (int)v;
+            }
+        };
+
+        public static Action Teleport = new Action()
+        {
+            doIt = (agt, coord) =>
+            {
+                agt.x -= ((int[])coord)[0];
+                agt.y -= ((int[])coord)[1];
             }
         };
     }
