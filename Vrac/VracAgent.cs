@@ -6,6 +6,21 @@ using System.Collections;
 
 namespace VracAgent
 {
+    public class Arbre_Move : Behavior
+    {
+        public Arbre_Move()
+        {
+
+        }
+    }
+    public class Arbre : Agent
+    {
+        public Arbre()
+        {
+
+        }
+    }
+
     public class Agent
     {
         public Behavior chaine;
@@ -53,9 +68,43 @@ namespace VracAgent
 
     public class Behavior
     {
+        public delegate void handle(Evenement e);
+
         // Chain of Responsability
-        public void handle(Evenement e) 
-        { 
+        public Behavior next;
+
+        public void handleOrLetTheNextDoIt(Evenement e)
+        {
+            if (isHandle(e))
+            {
+                handle(e);
+                if (isForwarder(e))
+                    letTheNextDoIt(e);
+            }
+            else
+                letTheNextDoIt(e);
+        }
+        public void letTheNextDoIt(Evenement e)
+        {
+            if (next == null) return;
+            next.handleOrLetTheNextDoIt(e);
+        }
+
+        // A surcharger : 
+
+        protected virtual void handle(Evenement e)
+        {
+
+        }
+
+        protected virtual bool isHandle(Evenement e)
+        {
+            return false;
+        }
+
+        protected virtual bool isForwarder(Evenement e)
+        {
+            return false;
         }
 
         public static Behavior BehJour = new Behavior() { /*do smthg*/ };
@@ -111,7 +160,7 @@ namespace VracAgent
         public Agent emetteur;
         public ArrayList parametres;
 
-        public static Evenement None = new Evenement(null, null);
+        public static Evenement Move = new Evenement(null, null);
 
         public Evenement(Agent emet, ArrayList param) 
         {
