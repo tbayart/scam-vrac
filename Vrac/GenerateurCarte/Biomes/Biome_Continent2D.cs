@@ -26,7 +26,7 @@ namespace Vrac.GenerateurCarte.Biomes
 
             Distribution<TypeElementBiome> bcp_Terre = new Distribution<TypeElementBiome>
             {
-                seuils = new List<double>() { 0.0d, 0.0005d, 1.0d },
+                seuils = new List<double>() { 0.0d, 0.0003d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Sable, TypeElementBiome.Terre }
             };
 
@@ -38,7 +38,7 @@ namespace Vrac.GenerateurCarte.Biomes
 
             Distribution<TypeElementBiome> bcp_Sable = new Distribution<TypeElementBiome>
             {
-                seuils = new List<double>() { 0.025d, 0.05d, 1.0d },
+                seuils = new List<double>() { 0.02d, 0.04d, 1.0d },
                 results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre, TypeElementBiome.Sable }
             };
 

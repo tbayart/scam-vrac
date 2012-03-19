@@ -8,6 +8,7 @@
         Vide,
         Terre,
         Sable,
-        Eau
+        Eau,
+        Pierre,
     }
 }

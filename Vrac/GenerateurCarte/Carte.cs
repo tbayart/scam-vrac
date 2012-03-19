@@ -42,8 +42,8 @@ namespace Vrac.GenerateurCarte
 
             Carte map = new Carte();
 
-            int largeur = 1024;
-            int hauteur = 1024;
+            int largeur = 750;
+            int hauteur = 750;
 
             // ----- POUR DEBUG -----
             int nbTotalElements = largeur * hauteur;
@@ -72,8 +72,8 @@ namespace Vrac.GenerateurCarte
 
             Distribution<TypeElementBiome> distribElt = new Distribution<TypeElementBiome>
             {
-                seuils = new List<double>() { 0.1d, 1d },
-                results = new List<TypeElementBiome>() { TypeElementBiome.Eau, TypeElementBiome.Terre }
+                seuils = new List<double>() { 0.05d, 0.10d, 1d },
+                results = new List<TypeElementBiome>() { TypeElementBiome.Sable, TypeElementBiome.Eau, TypeElementBiome.Terre }
             };
 
             int nbEltsAPlacer = (largeur * hauteur) / (128 * 128);
@@ -120,11 +120,94 @@ namespace Vrac.GenerateurCarte
                 // ----------------------
             }
 
+            for (int i = 0; i < 1; i++)
+            {
+                smooth(map);   
+            }
+
             // ----- POUR DEBUG -----
             map.ecrire(@".\Temp\Finale.bmp");
             // ----------------------
 
             return map;
+        }
+
+        private static void smooth(Carte map)
+        {
+            int x_max = map._carte.Length;
+            int y_max = map._carte[0].Length;
+
+            for (int x = 1; x < x_max-1; x++)
+                for (int y = 1; y < y_max-1; y++)
+                    smooth(map,x,y);
+        }
+
+        private static void smooth(Carte map, int x, int y)
+        {
+            int T = -1;
+            int S = 0;
+            int E = 1;
+
+            int score = 0;
+            for (int a = -1; a < 2; a++)
+                for (int b = -1; b < 2; b++)
+                    if (map._carte[x + a][y + b] == TypeElementBiome.Eau)
+                        score++;
+                    else if (map._carte[x + a][y + b] == TypeElementBiome.Terre)
+                        score--;
+
+            if (score < -5)
+                map._carte[x][y] = TypeElementBiome.Terre;
+            if (score > 5)
+                map._carte[x][y] = TypeElementBiome.Eau;
+
+
+            //// Cas 1 : point isolé
+            //    if (map._carte[x - 1][y] == map._carte[x + 1][y]    // à gauche = à droite
+            //        && map._carte[x][y - 1] == map._carte[x][y + 1]    // en haut = en bas
+            //        && map._carte[x][y - 1] == map._carte[x - 1][y]    // en haut = à gauche
+            //        )
+            //        map._carte[x][y] = map._carte[x][y - 1];            // set
+
+            // Cas 2 : L , dans chaque sens : 2 colonnes perpendiculaires identiques
+
+            bool Gch_E_HGche = map._carte[x - 1][y] == map._carte[x - 1][y - 1];
+            bool Gch_E_BGche = map._carte[x - 1][y] == map._carte[x - 1][y + 1];
+            bool H_E_HGche = map._carte[x][y - 1] == map._carte[x - 1][y - 1];
+            bool H_E_HDrt = map._carte[x][y - 1] == map._carte[x + 1][y - 1];
+            bool Drt_E_HDrt = map._carte[x + 1][y] == map._carte[x + 1][y - 1];
+            bool Drt_E_BDrt = map._carte[x + 1][y] == map._carte[x + 1][y + 1];
+            bool B_E_BGche = map._carte[x][y + 1] == map._carte[x - 1][y + 1];
+            bool B_E_BDrt = map._carte[x][y + 1] == map._carte[x + 1][y + 1];
+
+            if (
+                    Gch_E_HGche && Gch_E_BGche  // colonne de gauche
+                && H_E_HGche && H_E_HDrt // ligne du haut
+                )
+                map._carte[x][y] = map._carte[x - 1][y];            // set
+
+
+            if (
+                    Drt_E_HDrt && Drt_E_BDrt // colonne de droite
+                && H_E_HGche && H_E_HDrt // ligne du haut
+                )
+                map._carte[x][y] = map._carte[x + 1][y];            // set
+
+
+            if (
+                    Drt_E_HDrt && Drt_E_BDrt // colonne de droite
+                && B_E_BGche && B_E_BDrt // ligne du bas
+                )
+                map._carte[x][y] = map._carte[x + 1][y];            // set
+
+
+            if (
+                    Gch_E_HGche && Gch_E_BGche  // colonne de gauche
+                && B_E_BGche && B_E_BDrt // ligne du bas
+                )
+                map._carte[x][y] = map._carte[x][y + 1];            // set
+
+
         }
 
         #endregion -> Méthodes statiques
