@@ -9,10 +9,15 @@ namespace Vrac.GenerateurCarte
 {
     public class Carte
     {
+        public static Carte getCurrent()
+        {
+            return new Carte(); 
+        }
+
         #region -> Attributs
 
         // Représente la carte.
-        private TypeElementBiome[][] _carte;
+        public TypeElementBiome[][] _carte;
 
         #endregion -> Attributs
 
