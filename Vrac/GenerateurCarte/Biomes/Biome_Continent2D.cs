@@ -9,7 +9,7 @@ namespace Vrac.GenerateurCarte.Biomes
         /// <summary>
         /// Les distributions pour les voisins d'un type d'élément du biome.
         /// </summary>
-        //public static Dictionary<TypeElementBiome, Distribution<TypeElementBiome>[][]> S_DistributionVoisins;
+        public static Dictionary<TypeElementBiome, Distribution<TypeElementBiome>[][]> S_DistributionVoisins;
 
         private static Dictionary<TypeElementBiome, Distribution<TypeElementBiome>> S_Distributions;
 
@@ -22,7 +22,7 @@ namespace Vrac.GenerateurCarte.Biomes
         /// </summary>
         static Biome_Continent2D()
         {
-            //S_DistributionVoisins = new Dictionary<TypeElementBiome, Distribution<TypeElementBiome>[][]>();
+            S_DistributionVoisins = new Dictionary<TypeElementBiome, Distribution<TypeElementBiome>[][]>();
             S_Distributions = new Dictionary<TypeElementBiome, Distribution<TypeElementBiome>>();
 
             // On définit les différentes distributions possibles.
@@ -57,33 +57,33 @@ namespace Vrac.GenerateurCarte.Biomes
 
             // On définit le dictionnaire des distributions des voisins.
 
-            //S_DistributionVoisins[TypeElementBiome.Terre] = new[]
-            //    {
-            //        new [] {bcp_Terre, bcp_Terre, bcp_Terre},
-            //        new [] {bcp_Terre, null,      bcp_Terre},
-            //        new [] {bcp_Terre, bcp_Terre, bcp_Terre},
-            //    };
+            S_DistributionVoisins[TypeElementBiome.Terre] = new[]
+                {
+                    new [] {bcp_Terre, bcp_Terre, bcp_Terre},
+                    new [] {bcp_Terre, null,      bcp_Terre},
+                    new [] {bcp_Terre, bcp_Terre, bcp_Terre},
+                };
 
-            //S_DistributionVoisins[TypeElementBiome.Eau] = new[]
-            //    {
-            //        new [] {bcp_Eau, bcp_Eau, bcp_Eau},
-            //        new [] {bcp_Eau, null,    bcp_Eau},
-            //        new [] {bcp_Eau, bcp_Eau, bcp_Eau},
-            //    };
+            S_DistributionVoisins[TypeElementBiome.Eau] = new[]
+                {
+                    new [] {bcp_Eau, bcp_Eau, bcp_Eau},
+                    new [] {bcp_Eau, null,    bcp_Eau},
+                    new [] {bcp_Eau, bcp_Eau, bcp_Eau},
+                };
 
-            //S_DistributionVoisins[TypeElementBiome.Sable] = new[]
-            //    {
-            //        new [] {bcp_Sable, bcp_Sable, bcp_Sable},
-            //        new [] {bcp_Sable, null,      bcp_Sable},
-            //        new [] {bcp_Sable, bcp_Sable, bcp_Sable},
-            //    };
+            S_DistributionVoisins[TypeElementBiome.Sable] = new[]
+                {
+                    new [] {bcp_Sable, bcp_Sable, bcp_Sable},
+                    new [] {bcp_Sable, null,      bcp_Sable},
+                    new [] {bcp_Sable, bcp_Sable, bcp_Sable},
+                };
 
-            //S_DistributionVoisins[TypeElementBiome.Pierre] = new[]
-            //    {
-            //        new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
-            //        new [] {bcp_Pierre, null,       bcp_Pierre},
-            //        new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
-            //    };
+            S_DistributionVoisins[TypeElementBiome.Pierre] = new[]
+                {
+                    new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
+                    new [] {bcp_Pierre, null,       bcp_Pierre},
+                    new [] {bcp_Pierre, bcp_Pierre, bcp_Pierre},
+                };
         }
 
         #endregion -> Constructeurs statique

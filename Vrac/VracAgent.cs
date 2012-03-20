@@ -1,26 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Threading;
 using Vrac.GenerateurCarte;
 using Vrac.Tools;
+using System.IO;
 
 namespace VracAgent
 {
+    public class Annuaire{
+	
+	public List<Agent> agents = new List<Agent>();
+        public void add(Agent a ){agents.Add(a);}
+        public void del(Agent a ){agents.Remove(a);}
+	}
+
+    public class EvtDispatcher
+    {
+
+
+        public static object SyncRoot = new object();
+        public static Queue<Evenement> BAL = new Queue<Evenement>();
+
+        public static void Start()
+        {
+            while (!stop)
+            {
+                Do();
+                Thread.Sleep(0);
+            }
+        }
+
+        private static bool stop = false;
+        public static void Stop()
+        {
+            stop = true;
+        }
+
+        public static void Post(Evenement e)
+        {
+            lock (SyncRoot) { BAL.Enqueue(e); }
+        }
+
+        private static void Do()
+        {
+            Evenement e = null;
+            lock (SyncRoot)
+            {
+                if (BAL.Count > 0)
+                    e = BAL.Dequeue();
+                else
+                    Thread.Sleep(10);
+            }
+
+            if (e != null)
+                Do(e);
+        }
+
+        private static void Do(Evenement e)
+        {
+            Kernel.Receive(e);
+
+            // Récupérer les agents qui sont à portée
+            Kernel.pagesBlanches.agents
+                .Where(
+                    a => e.Portee == -1 || e.emetteur.Coord.getDistance(a.Coord) < e.Portee
+                )
+                .ToList().ForEach(
+                    agtConcerne => agtConcerne.Do("Hear", e.emetteur, e)
+                );
+
+
+        }
+    }
+
+    public class Kernel
+    {
+        public static Annuaire pagesBlanches = new Annuaire();
+
+        public static Carte carte;
+
+        public static T create<T>() where T : Agent, new()
+        {
+            T agt = new T();
+            pagesBlanches.add(agt);
+            return agt;
+        }
+
+        public static void Receive(Evenement e)
+        {
+            if(e is Dead)
+            {
+                pagesBlanches.del(e.emetteur);
+            }
+        }
+
+        public static void NewTurn()
+        {
+            EvtDispatcher.Post(Evenement.NewTurn);
+        }
+
+
+        private static int nbIter = 20;
+        private static bool stop = false;
+        public static void Stop()
+        {
+            stop = true;
+        }
+
+        public static void Start()
+        {
+            while (!stop && --nbIter > 0)
+            {
+                NewTurn();
+                Thread.Sleep(0);
+
+                Bitmap bmp = carte.getBitmap();
+
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    pagesBlanches.agents.ForEach(a =>
+                        g.DrawEllipse(Pens.White, a.Coord.X-3, a.Coord.Y-3, 6,6)
+                        );
+                }
+
+                bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:000}", (20 - nbIter)) + ".bmp");
+            }
+        }
+
+        public static void Init()
+        {
+            carte = Carte.GetCarteTest(200, 200);
+            for (int i = 0; i < 50; i++)
+            {
+                Dryad d = create<Dryad>();
+                d.Coord = new Coordonnees(Randomizer.Next(5, 250), Randomizer.Next(5, 250));
+            }
+            Start();
+        }
+    }
 
     public class Dryad : Agent
     {
         public Dryad()
         {
-            chaine =  CatalogueBehavior.DryadTurn;
+            chaine = CatalogueBehavior.DryadTurn;
+            abilit = new Dictionary<string, Capacity>();
+            abilit["Teleport"] = new  ICanTeleport_L1();
+            abilit["Plant"] = new  ICanPlant();
+            abilit["Retreat"] = new  ICanRetreat();
+            abilit["Hear"] = new  ICanHear();
+            abilit["Send"] = new  ICanSpeak();
         }
     }
 
 
     public class Agent
     {
-        public int x, y;
+        public Coordonnees Coord;
 
         public Behavior chaine;
         public Dictionary<string, Capacity> abilit;
@@ -48,12 +188,12 @@ namespace VracAgent
 
         public void Send(Evenement e)
         {
-            // wrd.Receive(e) ?
+            EvtDispatcher.Post(e);
         }
 
-        public Resultat Do(string ActionName, Agent c, object p)
+        public Resultat Do(string ActionName, Agent cible, object p)
         {
-            return abilit[ActionName].doIt(c, p);
+            return abilit[ActionName].doIt(this, cible, p);
         }
     }
 
@@ -70,23 +210,35 @@ namespace VracAgent
                             {
                                 isForwarder = (e, agent) => false,
                                 isHandler = (e, agent) => e == Evenement.NewTurn,
-                                handle = (e, agent) => agent.Do("Teleport",agent, new int[] {agent.x + Randomizer.Next(-3, 3), agent.y + Randomizer.Next(-3, 3)})
-                                    // emit evt Moved
-                                    // modif seuil fail if failed
-                                    // modif abilit to L2 if success and L1
+                                handle = (e, agent) =>
+                                             {
+                                                 Coordonnees newcoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-3, 3), agent.Coord.Y + Randomizer.Next(-3, 3));
+                                                 newcoord.X = Math.Max(0, newcoord.X);
+                                                 newcoord.X = Math.Min(Kernel.carte._carte.Length-1, newcoord.X);
+                                                 newcoord.Y = Math.Max(0, newcoord.Y);
+                                                 newcoord.Y = Math.Min(Kernel.carte._carte[0].Length-1, newcoord.Y);
+                                                 Resultat r = agent.Do("Teleport", agent, newcoord);
+                                                 if (r == Resultat.Succes)
+                                                 {
+                                                     agent.Do("Send", agent, new Moved(agent, agent.Coord.X, agent.Coord.Y));
+                                                 }
+                                             }
                             };
-            
+
             NearTo = new Behavior()
                          {
                              isForwarder = (e, agent) => false,
                              isHandler = (e, agent) => e is Moved,
                              handle = (e, agent) =>
                                           {
-                                              Resultat r = agent.Do("Plant", agent, new int[] { agent.x + Randomizer.Next(-3, 3), agent.y + Randomizer.Next(-3, 3) });
-            
+                                              Resultat r = agent.Do("Plant", agent, new Coordonnees(agent.Coord.X, agent.Coord.Y));
+
                                               if (r == Resultat.Succes)
-                                                  agent.Do("Retreat", agent, null);
-                                                 // emit evt Dead if succes
+                                              {
+                                                  Resultat rDie = agent.Do("Retreat", agent, null);
+                                                  if (rDie == Resultat.Succes)
+                                                      agent.Do("Send", agent, new Dead(agent));
+                                              }
                                           }
                          };
 
@@ -99,6 +251,7 @@ namespace VracAgent
     {
         public Moved(Agent emet, int x, int y) : base(emet, new ArrayList(){x,y})
         {
+		Portee = 6;
         }
     }
     public class Dead : Evenement
@@ -140,10 +293,10 @@ namespace VracAgent
         public Dictionary<Resultat, Action> act;
         public Distribution<Resultat> proba;
 
-        public Resultat doIt(Agent agt, object param)
+        public Resultat doIt(Agent acteur, Agent cible, object param)
         {
             Resultat r = proba.get();
-            act[r].doIt(agt, param);
+            act[r].doIt(acteur, cible, param);
             return r;
         }
     }
@@ -153,15 +306,15 @@ namespace VracAgent
         public ICanTeleport_L1()
         {
             proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.6d }, { Resultat.Succes, 0.4d }}};
-            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, null }, { Resultat.Succes, Action.Teleport} };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Teleport } };
         }
     }
     public class ICanTeleport_L2 : Capacity
     {
         public ICanTeleport_L2()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.2d }, { Resultat.Succes, 0.8d } } };
-            act = new Dictionary<Resultat, Action>() {  { Resultat.Echec, null }, { Resultat.Succes, Action.Teleport } };
+            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.1d }, { Resultat.Succes, 0.9d } } };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Teleport } };
         }
     }
     public class ICanPlant : Capacity
@@ -169,8 +322,8 @@ namespace VracAgent
         public ICanPlant()
         {
 
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Critique, 0.0001d }, { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d - 0.01d - 0.0001d } } }; 
-            act = new Dictionary<Resultat, Action>() { { Resultat.Critique, Action.Die }, { Resultat.Echec, null }, { Resultat.Succes, Action.Plant } };
+            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Critique, 0.0001d }, { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d - 0.01d - 0.0001d } } };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Critique, CatalogueAction.Die }, { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Plant } };
         }
     }
     public class ICanRetreat : Capacity
@@ -178,16 +331,66 @@ namespace VracAgent
         public ICanRetreat()
         {
             proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.2d }, { Resultat.Succes, 0.8d } } };
-            act = new Dictionary<Resultat, Action>() {  { Resultat.Echec, null }, { Resultat.Succes, Action.Die } };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Die } };
+        }
+    }
+    public class ICanHear : Capacity
+    {
+        public ICanHear()
+        {
+            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Hear } };
+        }
+    }
+    public class ICanSpeak : Capacity
+    {
+        public ICanSpeak()
+        {
+            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
+            act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Speak } };
         }
     }
 
-    public class Action
+    public class CatalogueAction
     {
-        public delegate void DoIt(Agent agt, object param);
+        public static Action Teleport = new Action()
+                                            {
+                                                doIt = (acteur, cible, coord) =>
+                                                           {
+                                                               Coordonnees C = ((Coordonnees)coord);
+                                                               cible.Coord.X = C.X;
+                                                               cible.Coord.Y = C.Y;
+                                                           }
+                                            };
 
-        public DoIt doIt;
+        public static Action Plant = new Action()
+                                         {
+                                             doIt = (acteur, cible, coord) =>
+                                                        {
+                                                            Coordonnees C = ((Coordonnees)coord);
+                                                            Kernel.carte._carte[C.X][C.Y] = TypeElementBiome.Arbre;
+                                                        }
+                                         };
 
+        public static Action Die = new Action()
+        {
+            doIt = (acteur, cible, coord) => { }
+        };
+        public static Action None = new Action()
+        {
+            doIt = (acteur, cible, coord) => { }
+        };
+
+        public static Action Hear = new Action()
+                                       {
+                                           doIt = (acteur, cible, e) => acteur.Receive((Evenement)e)
+                                       };
+
+        public static Action Speak = new Action()
+                                       {
+                                           doIt = (acteur, cible, e) => acteur.Send((Evenement)e)
+                                       };
+	
         //public static Action Manger = new Action()
         //{
         //    doIt = (agt, v) =>
@@ -196,31 +399,20 @@ namespace VracAgent
         //    }
         //};
 
-        public static Action Teleport = new Action()
-                                            {
-                                                doIt = (agt, coord)=>
-                                                           {
-                                                               agt.x = ((int[]) coord)[0];
-                                                               agt.y = ((int[]) coord)[1];
-                                                           }
-                                            };
+        static CatalogueAction(){}
+    }
 
-        public static Action Plant = new Action()
-                                         {
-                                             doIt = (agt, coord) =>
-                                                        {
-                                                            Carte.getCurrent()._carte[((int[]) coord)[0]][((int[]) coord)[1]] = TypeElementBiome.Arbre;
-                                                        }
-                                         };
+    public class Action
+    {
+        public delegate void DoIt(Agent acteur, Agent cible, object param);
 
-        public static Action Die = new Action()
-                                       {
-                                             doIt = (agt, coord) =>{}
-                                       };
+        public DoIt doIt;
     }
 
     public class Evenement
     {
+	public double Portee;
+
         public Agent emetteur;
         public ArrayList parametres;
 
@@ -229,16 +421,23 @@ namespace VracAgent
             this.emetteur = emet;
             this.parametres = param;
         }
-        
-        public static Evenement NewTurn = new Evenement(null, null);
+
+        public static Evenement NewTurn = new Evenement(null, null) { Portee =-1};
     }
 
     public class Resultat
     {
-        public static Resultat Critique = new Resultat();
-        public static Resultat Echec = new Resultat();
-        public static Resultat Succes = new Resultat();
-        public static Resultat Epic = new Resultat();
+        private int key;
+
+        public static Resultat Critique = new Resultat(){key=1};
+        public static Resultat Echec = new Resultat() { key = 2 };
+        public static Resultat Succes = new Resultat() { key = 3 };
+        public static Resultat Epic = new Resultat() { key = 4 };
+
+        public override bool Equals(object obj)
+        {
+            return key == (obj as Resultat).key;
+        }
     }
 
     /*unused

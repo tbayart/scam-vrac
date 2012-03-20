@@ -9,10 +9,6 @@ namespace Vrac.GenerateurCarte
 {
     public class Carte
     {
-        public static Carte getCurrent()
-        {
-            return new Carte(); 
-        }
 
         #region -> Attributs
 
@@ -96,7 +92,7 @@ namespace Vrac.GenerateurCarte
                 Coordonnees coord = lstElementsAEtendre[i];
                 lstElementsAEtendre.RemoveAt(i);
 
-                List<Coordonnees> lstTemp = map.etendreV2(coord);
+                List<Coordonnees> lstTemp = map.etendre(coord);
                 lstElementsAEtendre.AddRange(lstTemp);
 
                 // ----- POUR DEBUG -----
@@ -111,14 +107,14 @@ namespace Vrac.GenerateurCarte
             }
 
             // ----- POUR DEBUG -----
-            map.ecrire(@".\Temp\Etape_Avant_Lissage_1.bmp");
+            //map.ecrire(@".\Temp\Etape_Avant_Lissage_1.bmp");
             // ----------------------
 
             // Lissage de la carte.
             map.lisser();
 
             // ----- POUR DEBUG -----
-            map.ecrire(@".\Temp\Etape_Avant_Lissage_2.bmp");
+            //map.ecrire(@".\Temp\Etape_Avant_Lissage_2.bmp");
             // ----------------------
 
             map.lisser();
@@ -301,26 +297,26 @@ namespace Vrac.GenerateurCarte
         private List<Coordonnees> etendre(Coordonnees coord)
         {
             List<Coordonnees> lstNouveauxVoisins = new List<Coordonnees>();
-            
-            //Distribution<TypeElementBiome>[][] distrib = Biome_Continent2D.S_DistributionVoisins[this._carte[coord.X][coord.Y]];
-            
-            //for (int offset_x = -1; offset_x <= 1; offset_x++)
-            //{
-            //    for (int offset_y = -1; offset_y <= 1; offset_y++)
-            //    {
-            //        if (offset_y == 0 && offset_x == 0)
-            //            continue;
 
-            //        if (coord.X + offset_x > -1 && coord.X + offset_x < this._carte.Length
-            //            && coord.Y + offset_y > -1 && coord.Y + offset_y < this._carte[coord.X].Length)
-            //        {
-            //            if (this._carte[coord.X + offset_x][coord.Y + offset_y] == TypeElementBiome.Vide)
-            //                lstNouveauxVoisins.Add(new Coordonnees(coord.X + offset_x, coord.Y + offset_y));
+            Distribution<TypeElementBiome>[][] distrib = Biome_Continent2D.S_DistributionVoisins[this._carte[coord.X][coord.Y]];
 
-            //            this._carte[coord.X + offset_x][coord.Y + offset_y] = distrib[offset_x + 1][offset_y + 1].get();
-            //        }
-            //    }
-            //}
+            for (int offset_x = -1; offset_x <= 1; offset_x++)
+            {
+                for (int offset_y = -1; offset_y <= 1; offset_y++)
+                {
+                    if (offset_y == 0 && offset_x == 0)
+                        continue;
+
+                    if (coord.X + offset_x > -1 && coord.X + offset_x < this._carte.Length
+                        && coord.Y + offset_y > -1 && coord.Y + offset_y < this._carte[coord.X].Length)
+                    {
+                        if (this._carte[coord.X + offset_x][coord.Y + offset_y] == TypeElementBiome.Vide)
+                            lstNouveauxVoisins.Add(new Coordonnees(coord.X + offset_x, coord.Y + offset_y));
+
+                        this._carte[coord.X + offset_x][coord.Y + offset_y] = distrib[offset_x + 1][offset_y + 1].get();
+                    }
+                }
+            }
 
             return lstNouveauxVoisins;
         }
@@ -371,27 +367,36 @@ namespace Vrac.GenerateurCarte
             return lstNouveauxVoisins;
         }
 
-        private void ecrire(string cheminFichier)
+        public void ecrire(string cheminFichier)
         {
-            if (this._carte != null && this._carte.Length > 0 && this._carte[0] != null)
+                getBitmap().Save(String.Format(cheminFichier));
+            
+        }
+
+        public Bitmap getBitmap()
+        {
+            if (this._carte == null || this._carte.Length <= 0 || this._carte[0] == null)
+                return null;
+
+            int hauteur = this._carte.Length;
+            int largeur = this._carte[0].Length;
+
+            Bitmap image = new Bitmap(largeur, hauteur);
+            for (int i = 0; i < largeur; i++)
             {
-                int hauteur = this._carte.Length;
-                int largeur = this._carte[0].Length;
-
-                Bitmap image = new Bitmap(largeur, hauteur);
-                for (int i = 0; i < largeur; i++)
-                    for (int j = 0; j < hauteur; j++)
-                    {
-                        image.SetPixel(i, j, this.getColorElement(i, j));
-                    }
-
-                //using (Graphics g = Graphics.FromImage(image))
-                //{
-                //    g.DrawPolygon(Pens.Red, p.getPoints());
-                //}
-
-                image.Save(String.Format(cheminFichier));
+                for (int j = 0; j < hauteur; j++)
+                {
+                    image.SetPixel(i, j, this.getColorElement(i, j));
+                }
             }
+
+            //using (Graphics g = Graphics.FromImage(image))
+            //{
+            //    g.DrawPolygon(Pens.Red, p.getPoints());
+            //}
+
+            return image;
+
         }
 
         private Color getColorElement(int x, int y)
@@ -403,13 +408,15 @@ namespace Vrac.GenerateurCarte
                 case TypeElementBiome.Vide:
                     return Color.Black; //Transparent;
                 case TypeElementBiome.Terre:
-                    return Color.DarkGreen;
+                    return Color.Brown;
                 case TypeElementBiome.Eau:
                     return Color.Blue;
                 case TypeElementBiome.Sable:
                     return Color.SandyBrown;
                 case TypeElementBiome.Pierre:
                     return Color.DarkGray;
+                case TypeElementBiome.Arbre:
+                    return Color.Green;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
