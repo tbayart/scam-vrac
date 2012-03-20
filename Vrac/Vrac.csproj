@@ -44,13 +44,34 @@
     <Compile Include="GenerateurCarte\Biomes\Biome_Continent2D.cs" />
     <Compile Include="GenerateurCarte\Biomes\IBiome_Param.cs" />
     <Compile Include="GenerateurCarte\Carte.cs" />
-    <Compile Include="GenerateurCarte\Distribution.cs" />
     <Compile Include="GenerateurCarte\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SMA\Actions\Action.cs" />
+    <Compile Include="SMA\Actions\CatalogueActions.cs" />
+    <Compile Include="SMA\Agents\Agent.cs" />
+    <Compile Include="SMA\Agents\Dryad.cs" />
+    <Compile Include="SMA\Annuaire.cs" />
+    <Compile Include="SMA\Capacites\Capacite.cs" />
+    <Compile Include="SMA\Capacites\Cap_Ecouter.cs" />
+    <Compile Include="SMA\Capacites\Cap_Parler.cs" />
+    <Compile Include="SMA\Capacites\Cap_Planter.cs" />
+    <Compile Include="SMA\Capacites\Cap_Retirer.cs" />
+    <Compile Include="SMA\Capacites\Cap_Teleporter_N1.cs" />
+    <Compile Include="SMA\Capacites\Cap_Teleporter_N2.cs" />
+    <Compile Include="SMA\Comportements\CatalogueComportements.cs" />
+    <Compile Include="SMA\Comportements\Comportement.cs" />
+    <Compile Include="SMA\Evenements\Evenement.cs" />
+    <Compile Include="SMA\Evenements\Evt_Deplace.cs" />
+    <Compile Include="SMA\Evenements\Evt_Mort.cs" />
+    <Compile Include="SMA\Evenements\ManagerEvenements.cs" />
+    <Compile Include="SMA\Kernel.cs" />
+    <Compile Include="SMA\Resultats\Resultat.cs" />
     <Compile Include="Tools\Coordonnees.cs" />
+    <Compile Include="Tools\Distribution.cs" />
     <Compile Include="Tools\Randomizer.cs" />
     <Compile Include="VracAgent.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

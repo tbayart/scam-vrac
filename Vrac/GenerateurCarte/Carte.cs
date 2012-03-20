@@ -226,9 +226,9 @@ namespace Vrac.GenerateurCarte
         private List<Coordonnees> placerElementsAleatoirement()
         {
             Distribution<TypeElementBiome> distribElt = new Distribution<TypeElementBiome>();
-            distribElt.dicoSeuils[TypeElementBiome.Eau] = 0.05d;
-            distribElt.dicoSeuils[TypeElementBiome.Terre] = 0.9d;
-            distribElt.dicoSeuils[TypeElementBiome.Sable] = 0.05d;
+            distribElt.DicoSeuils[TypeElementBiome.Eau] = 0.05d;
+            distribElt.DicoSeuils[TypeElementBiome.Terre] = 0.9d;
+            distribElt.DicoSeuils[TypeElementBiome.Sable] = 0.05d;
 
             int largeur = this._carte.Length;
             int hauteur = this._carte[0].Length;
@@ -440,12 +440,12 @@ namespace Vrac.GenerateurCarte
         public static CarteV2 GetCarteTest(int superficie)
         {
             Distribution<byte> distCoteIni = new Distribution<byte>();
-            distCoteIni.dicoSeuils[0] = 0.75d;
-            distCoteIni.dicoSeuils[1] = 0.25d;
+            distCoteIni.DicoSeuils[0] = 0.75d;
+            distCoteIni.DicoSeuils[1] = 0.25d;
 
             Distribution<byte> distDiagIni = new Distribution<byte>();
-            distDiagIni.dicoSeuils[0] = 0.95d;
-            distDiagIni.dicoSeuils[1] = 0.05d;
+            distDiagIni.DicoSeuils[0] = 0.95d;
+            distDiagIni.DicoSeuils[1] = 0.05d;
 
             Distribution<byte>[][] distribEtapeInitiale = new[]
                 {
@@ -455,12 +455,12 @@ namespace Vrac.GenerateurCarte
                 };
 
             Distribution<byte> distCoteN = new Distribution<byte>();
-            distCoteN.dicoSeuils[0] = 0.75d;
-            distCoteN.dicoSeuils[1] = 0.25d;
+            distCoteN.DicoSeuils[0] = 0.75d;
+            distCoteN.DicoSeuils[1] = 0.25d;
 
             Distribution<byte> distDiagN = new Distribution<byte>();
-            distDiagN.dicoSeuils[0] = 0.75d;
-            distDiagN.dicoSeuils[1] = 0.25d;
+            distDiagN.DicoSeuils[0] = 0.75d;
+            distDiagN.DicoSeuils[1] = 0.25d;
 
             Distribution<byte>[][] distribEtapeN = new[]
                 {

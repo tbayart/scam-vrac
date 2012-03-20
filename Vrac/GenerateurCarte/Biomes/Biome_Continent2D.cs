@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Vrac.Tools;
 
 namespace Vrac.GenerateurCarte.Biomes
 {
@@ -28,31 +29,31 @@ namespace Vrac.GenerateurCarte.Biomes
             // On définit les différentes distributions possibles.
 
             Distribution<TypeElementBiome> bcp_Terre = new Distribution<TypeElementBiome>();
-            bcp_Terre.dicoSeuils[TypeElementBiome.Terre] = 0.9997d;
-            bcp_Terre.dicoSeuils[TypeElementBiome.Pierre] = 0.0003d;
-            bcp_Terre.dicoSeuils[TypeElementBiome.Eau] = 0.0d;
-            bcp_Terre.dicoSeuils[TypeElementBiome.Sable] = 0.0d;
+            bcp_Terre.DicoSeuils[TypeElementBiome.Terre] = 0.9997d;
+            bcp_Terre.DicoSeuils[TypeElementBiome.Pierre] = 0.0003d;
+            bcp_Terre.DicoSeuils[TypeElementBiome.Eau] = 0.0d;
+            bcp_Terre.DicoSeuils[TypeElementBiome.Sable] = 0.0d;
             S_Distributions[TypeElementBiome.Terre] = bcp_Terre;
 
             Distribution<TypeElementBiome> bcp_Eau = new Distribution<TypeElementBiome>();
-            bcp_Eau.dicoSeuils[TypeElementBiome.Eau] = 0.9995d;
-            bcp_Eau.dicoSeuils[TypeElementBiome.Sable] = 0.0005d;
-            bcp_Eau.dicoSeuils[TypeElementBiome.Terre] = 0.0d;
-            bcp_Eau.dicoSeuils[TypeElementBiome.Pierre] = 0.0d;
+            bcp_Eau.DicoSeuils[TypeElementBiome.Eau] = 0.9995d;
+            bcp_Eau.DicoSeuils[TypeElementBiome.Sable] = 0.0005d;
+            bcp_Eau.DicoSeuils[TypeElementBiome.Terre] = 0.0d;
+            bcp_Eau.DicoSeuils[TypeElementBiome.Pierre] = 0.0d;
             S_Distributions[TypeElementBiome.Eau] = bcp_Eau;
 
             Distribution<TypeElementBiome> bcp_Sable = new Distribution<TypeElementBiome>();
-            bcp_Sable.dicoSeuils[TypeElementBiome.Eau] = 0.02d;
-            bcp_Sable.dicoSeuils[TypeElementBiome.Terre] = 0.02d;
-            bcp_Sable.dicoSeuils[TypeElementBiome.Sable] = 0.96d;
-            bcp_Sable.dicoSeuils[TypeElementBiome.Pierre] = 0.0d;
+            bcp_Sable.DicoSeuils[TypeElementBiome.Eau] = 0.02d;
+            bcp_Sable.DicoSeuils[TypeElementBiome.Terre] = 0.02d;
+            bcp_Sable.DicoSeuils[TypeElementBiome.Sable] = 0.96d;
+            bcp_Sable.DicoSeuils[TypeElementBiome.Pierre] = 0.0d;
             S_Distributions[TypeElementBiome.Sable] = bcp_Sable;
 
             Distribution<TypeElementBiome> bcp_Pierre = new Distribution<TypeElementBiome>();
-            bcp_Pierre.dicoSeuils[TypeElementBiome.Eau] = 0.000001d;
-            bcp_Pierre.dicoSeuils[TypeElementBiome.Terre] = 0.000499d;
-            bcp_Pierre.dicoSeuils[TypeElementBiome.Pierre] = 0.9995d;
-            bcp_Pierre.dicoSeuils[TypeElementBiome.Sable] = 0.0d;
+            bcp_Pierre.DicoSeuils[TypeElementBiome.Eau] = 0.000001d;
+            bcp_Pierre.DicoSeuils[TypeElementBiome.Terre] = 0.000499d;
+            bcp_Pierre.DicoSeuils[TypeElementBiome.Pierre] = 0.9995d;
+            bcp_Pierre.DicoSeuils[TypeElementBiome.Sable] = 0.0d;
             S_Distributions[TypeElementBiome.Pierre] = bcp_Pierre;
 
             // On définit le dictionnaire des distributions des voisins.
@@ -91,10 +92,10 @@ namespace Vrac.GenerateurCarte.Biomes
         public static Distribution<TypeElementBiome>[][] GetDistributionVoisins(TypeElementBiome[][] region)
         {
             Distribution<TypeElementBiome> dist = new Distribution<TypeElementBiome>();
-            dist.dicoSeuils[TypeElementBiome.Eau] = 0;
-            dist.dicoSeuils[TypeElementBiome.Terre] = 0;
-            dist.dicoSeuils[TypeElementBiome.Sable] = 0;
-            dist.dicoSeuils[TypeElementBiome.Pierre] = 0;
+            dist.DicoSeuils[TypeElementBiome.Eau] = 0;
+            dist.DicoSeuils[TypeElementBiome.Terre] = 0;
+            dist.DicoSeuils[TypeElementBiome.Sable] = 0;
+            dist.DicoSeuils[TypeElementBiome.Pierre] = 0;
             int nbElements = 0;
 
             for (int i = 0; i < 5; i++)
@@ -105,17 +106,17 @@ namespace Vrac.GenerateurCarte.Biomes
                     if (e != TypeElementBiome.Vide)
                     {
                         nbElements++;
-                        dist.dicoSeuils[TypeElementBiome.Eau] += S_Distributions[e].dicoSeuils[TypeElementBiome.Eau];
-                        dist.dicoSeuils[TypeElementBiome.Terre] += S_Distributions[e].dicoSeuils[TypeElementBiome.Terre];
-                        dist.dicoSeuils[TypeElementBiome.Sable] += S_Distributions[e].dicoSeuils[TypeElementBiome.Sable];
-                        dist.dicoSeuils[TypeElementBiome.Pierre] += S_Distributions[e].dicoSeuils[TypeElementBiome.Pierre];
+                        dist.DicoSeuils[TypeElementBiome.Eau] += S_Distributions[e].DicoSeuils[TypeElementBiome.Eau];
+                        dist.DicoSeuils[TypeElementBiome.Terre] += S_Distributions[e].DicoSeuils[TypeElementBiome.Terre];
+                        dist.DicoSeuils[TypeElementBiome.Sable] += S_Distributions[e].DicoSeuils[TypeElementBiome.Sable];
+                        dist.DicoSeuils[TypeElementBiome.Pierre] += S_Distributions[e].DicoSeuils[TypeElementBiome.Pierre];
                     }
                 }
 
-            dist.dicoSeuils[TypeElementBiome.Eau] /= nbElements;
-            dist.dicoSeuils[TypeElementBiome.Terre] /= nbElements;
-            dist.dicoSeuils[TypeElementBiome.Sable] /= nbElements;
-            dist.dicoSeuils[TypeElementBiome.Pierre] /= nbElements;
+            dist.DicoSeuils[TypeElementBiome.Eau] /= nbElements;
+            dist.DicoSeuils[TypeElementBiome.Terre] /= nbElements;
+            dist.DicoSeuils[TypeElementBiome.Sable] /= nbElements;
+            dist.DicoSeuils[TypeElementBiome.Pierre] /= nbElements;
 
             return new[]
                 {

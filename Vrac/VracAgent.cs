@@ -1,13 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Threading;
-using Vrac.GenerateurCarte;
 using Vrac.Tools;
-using System.IO;
 
 namespace VracAgent
 {
@@ -82,7 +79,7 @@ namespace VracAgent
     {
         public static Annuaire pagesBlanches = new Annuaire();
 
-        public static Carte carte;
+        public static Vrac.GenerateurCarte.Carte carte;
 
         public static T create<T>() where T : Agent, new()
         {
@@ -134,7 +131,7 @@ namespace VracAgent
 
         public static void Init()
         {
-            carte = Carte.GetCarteTest(256, 256);
+            carte = Vrac.GenerateurCarte.Carte.GetCarteTest(256, 256);
             for (int i = 0; i < 50; i++)
             {
                 Dryad d = create<Dryad>();
@@ -306,7 +303,7 @@ namespace VracAgent
     {
         public ICanTeleport_L1()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.6d }, { Resultat.Succes, 0.4d }}};
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.6d }, { Resultat.Succes, 0.4d }}};
             act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Teleport } };
         }
     }
@@ -314,7 +311,7 @@ namespace VracAgent
     {
         public ICanTeleport_L2()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.1d }, { Resultat.Succes, 0.9d } } };
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.1d }, { Resultat.Succes, 0.9d } } };
             act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Teleport } };
         }
     }
@@ -323,7 +320,7 @@ namespace VracAgent
         public ICanPlant()
         {
 
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Critique, 0.0001d }, { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d - 0.01d - 0.0001d } } };
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Critique, 0.0001d }, { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d - 0.01d - 0.0001d } } };
             act = new Dictionary<Resultat, Action>() { { Resultat.Critique, CatalogueAction.Die }, { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Plant } };
         }
     }
@@ -331,7 +328,7 @@ namespace VracAgent
     {
         public ICanRetreat()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.2d }, { Resultat.Succes, 0.8d } } };
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.2d }, { Resultat.Succes, 0.8d } } };
             act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Die } };
         }
     }
@@ -339,7 +336,7 @@ namespace VracAgent
     {
         public ICanHear()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
             act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Hear } };
         }
     }
@@ -347,7 +344,7 @@ namespace VracAgent
     {
         public ICanSpeak()
         {
-            proba = new Distribution<Resultat>() { dicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
+            proba = new Distribution<Resultat>() { DicoSeuils = new Dictionary<Resultat, double>() { { Resultat.Echec, 0.01d }, { Resultat.Succes, 1.0d-0.01d } } };
             act = new Dictionary<Resultat, Action>() { { Resultat.Echec, CatalogueAction.None }, { Resultat.Succes, CatalogueAction.Speak } };
         }
     }
@@ -369,7 +366,7 @@ namespace VracAgent
                                              doIt = (acteur, cible, coord) =>
                                                         {
                                                             Coordonnees C = ((Coordonnees)coord);
-                                                            Kernel.carte._carte[C.X][C.Y] = TypeElementBiome.Arbre;
+                                                            Kernel.carte._carte[C.X][C.Y] = Vrac.GenerateurCarte.TypeElementBiome.Arbre;
                                                         }
                                          };
 

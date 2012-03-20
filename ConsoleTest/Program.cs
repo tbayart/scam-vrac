@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Vrac;
 using Vrac.GenerateurCarte;
-using System.IO;
-using VracAgent;
+using Vrac.SMA;
+using Vrac.SMA.Evenements;
 
 namespace ConsoleTest
 {
@@ -38,13 +39,28 @@ namespace ConsoleTest
         {
             Console.WriteLine("Heure début : {0}", DateTime.Now.ToLongTimeString());
 
-            ThreadStart tsDsp = EvtDispatcher.Start;
-            Thread t = new Thread(tsDsp);
-            t.Start();
+            int test = 1;
 
-            Kernel.Init();
+            if (test == 1) // On utilise le nouveau code, qui ne marche pas ;-(
+            {
+                ThreadStart tsMgrEvts = ManagerEvenements.Start;
+                Thread tMgrEvts = new Thread(tsMgrEvts);
+                tMgrEvts.Start();
 
-            EvtDispatcher.Stop();
+                Kernel.Init();
+
+                ManagerEvenements.Stop();
+            }
+            else // On utilise le code de VracAgent.cs
+            {
+                ThreadStart tsMgrEvts = VracAgent.EvtDispatcher.Start;
+                Thread tMgrEvts = new Thread(tsMgrEvts);
+                tMgrEvts.Start();
+
+                VracAgent.Kernel.Init();
+
+                VracAgent.EvtDispatcher.Stop();
+            }
 
             Console.WriteLine("Heure fin   : {0}", DateTime.Now.ToLongTimeString());
             Console.WriteLine("Terminé !");
