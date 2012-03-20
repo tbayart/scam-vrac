@@ -65,11 +65,12 @@ namespace VracAgent
             Kernel.Receive(e);
 
             // Récupérer les agents qui sont à portée
-            Kernel.pagesBlanches.agents
+            var q = Kernel.pagesBlanches.agents
                 .Where(
-                    a => e.Portee == -1 || e.emetteur.Coord.getDistance(a.Coord) < e.Portee
-                )
-                .ToList().ForEach(
+                    a => e.Portee == -1 || e.emetteur.Coord.getDistance(a.Coord) < e.Portee && e.emetteur!=a
+                );
+            
+            q.ToList().ForEach(
                     agtConcerne => agtConcerne.Do("Hear", e.emetteur, e)
                 );
 
@@ -123,7 +124,7 @@ namespace VracAgent
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     pagesBlanches.agents.ForEach(a =>
-                        g.DrawEllipse(Pens.White, a.Coord.X-3, a.Coord.Y-3, 6,6)
+                        g.DrawEllipse(Pens.White, a.Coord.X-1, a.Coord.Y-1, 2,2)
                         );
                 }
 
@@ -133,7 +134,7 @@ namespace VracAgent
 
         public static void Init()
         {
-            carte = Carte.GetCarteTest(200, 200);
+            carte = Carte.GetCarteTest(256, 256);
             for (int i = 0; i < 50; i++)
             {
                 Dryad d = create<Dryad>();
@@ -183,7 +184,7 @@ namespace VracAgent
 
         public void Receive(Evenement e)
         {
-            chaine.handle(e, this);
+            chaine.handleOrLetTheNextDoIt(e, this);
         }
 
         public void Send(Evenement e)
@@ -251,7 +252,7 @@ namespace VracAgent
     {
         public Moved(Agent emet, int x, int y) : base(emet, new ArrayList(){x,y})
         {
-		Portee = 6;
+		Portee = 4;
         }
     }
     public class Dead : Evenement
