@@ -37,7 +37,7 @@ namespace Vrac.SMA.Evenements
         /// <param name="emetteur">L'emetteur de l'Evenement.</param>
         /// <param name="param">Les paramètres de l'Evenement.</param>
         public Evenement(Agent emetteur, ArrayList param)
-            :this(emetteur, param, -1)
+            :this(emetteur, param, 0)
         {
         }
 

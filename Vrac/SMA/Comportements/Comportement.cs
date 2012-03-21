@@ -24,12 +24,13 @@ namespace Vrac.SMA.Comportements
             {
                 this.Handle(evt, agent);
 
-                if (this.IsForwarder(evt, agent))
+                if (this.IsForwarder(evt, agent) && this.Next!=null)
                     this.Next.handleOrLetTheNextDoIt(evt, agent);
             }
             else
             {
-                this.Next.handleOrLetTheNextDoIt(evt, agent);
+                if (this.Next != null)
+                    this.Next.handleOrLetTheNextDoIt(evt, agent);
             }
         }
 
