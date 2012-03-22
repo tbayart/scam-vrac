@@ -28,10 +28,13 @@ namespace Vrac.SMA
 
         public static void Init()
         {
-            int taille = 512;
+            int taille = 1024;
             CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
-            PagesBlanches.CreerSecteurs(taille, taille, 256);
-            for (int i = 0; i < taille*taille/512; i++)
+            PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
+
+            PagesBlanches.DrawSecteurs();
+
+            for (int i = 0; i < taille * taille / 512; i++)
             {
                 Creer<Dryad>(taille);
             }
@@ -70,7 +73,7 @@ namespace Vrac.SMA
                                 );
                         }
 
-                if (nbIter % 100 == 0)
+                if (nbIter % 250 == 0)
                 {
                     bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
                 }

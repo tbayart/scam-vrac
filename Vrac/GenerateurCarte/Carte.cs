@@ -81,7 +81,7 @@ namespace Vrac.GenerateurCarte
             if (!Directory.Exists(@".\Temp\"))
                 Directory.CreateDirectory(@".\Temp\");
 
-            map.ecrire(@".\Temp\Etape_0.bmp");
+            //map.ecrire(@".\Temp\Etape_0.bmp");
             // ----------------------
 
             // On étend la carte tant qu'il y a de la place.
@@ -100,7 +100,7 @@ namespace Vrac.GenerateurCarte
 
                 if (etape * limiteEtape < nbElementsActuel)
                 {
-                    map.ecrire(String.Format(@".\Temp\Etape_{0}.bmp", etape));
+                    //map.ecrire(String.Format(@".\Temp\Etape_{0}.bmp", etape));
                     etape++;
                 }
                 // ----------------------

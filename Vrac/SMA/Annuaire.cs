@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Vrac.SMA.Agents;
 using Vrac.Tools;
@@ -11,7 +12,7 @@ namespace Vrac.SMA
 
         // La liste de tous les Agent instanciés.
         public List<Agent> clAgents { get; set; }
-        public List<ISecteur> clSecteur { get; set; }
+        public Secteur SecteurPrincipal { get; set; }
         public Dictionary<Agent, List<ISecteur>> annuaire;
 
         #endregion --> Attributs
@@ -24,7 +25,6 @@ namespace Vrac.SMA
         public Annuaire()
         {
             this.clAgents = new List<Agent>();
-            this.clSecteur = new List<ISecteur>();
             this.annuaire = new Dictionary<Agent, List<ISecteur>>();
         }
         
@@ -49,7 +49,7 @@ namespace Vrac.SMA
 
         public IEnumerable<ISecteur> Secteurs(Coordonnees position, double distance)
         {
-            return clSecteur.Where(s => s.Centre.getDistance(position) < s.Taille + distance);
+            return SecteurPrincipal.Secteurs(position, distance).OfType<FloorSecteur>();
         }
 
         public void majAgent(Agent a)
@@ -60,7 +60,7 @@ namespace Vrac.SMA
 
         public void add(Agent agent)
         {
-            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0).ToList();
+            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0.1).ToList();
             clAgents.Add(agent);
             annuaire.Add(agent, secteurs);
             secteurs.ForEach(s => s.Agents.Add(agent));
@@ -70,41 +70,47 @@ namespace Vrac.SMA
         {
             annuaire.Remove(agent);
             clAgents.Remove(agent);
-            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0).ToList();
+            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0.1).ToList();
             secteurs.ForEach(s => s.Agents.Remove(agent));
         }
 
-        public void CreerSecteurs(int taille_x, int taille_y, int taille_secteur)
+        public void CreerSecteurPrincipal(int taille_Carte, int x_SecteurAcreer, int y_SecteurAcreer, int taille_secteur)
         {
-            int x_SecteurAcreer = 0;
-            int y_SecteurAcreer = 0;
-
-            while (y_SecteurAcreer < taille_y)
-            {
-                while (x_SecteurAcreer < taille_x)
-                {
-                    CreerSecteur(x_SecteurAcreer, y_SecteurAcreer, taille_secteur);
-                    x_SecteurAcreer += taille_secteur;
-                    if (x_SecteurAcreer > taille_x)
-                        x_SecteurAcreer = taille_x;
-                }
-                x_SecteurAcreer = 0;
-                y_SecteurAcreer += taille_secteur;
-                if (y_SecteurAcreer > taille_y)
-                    y_SecteurAcreer = taille_y;
-            }
-        }
-
-        private void CreerSecteur(int x_SecteurAcreer, int y_SecteurAcreer, int taille_secteur)
-        {
-            clSecteur.Add(
+            SecteurPrincipal = 
                 new Secteur()
                 {
                     Centre = new Coordonnees(x_SecteurAcreer, y_SecteurAcreer),
                     Taille = taille_secteur,
-                });
+                };
+
+            SecteurPrincipal.CreerSecteurs(SecteurPrincipal, taille_secteur/4, true);
         }
 
+        public void DrawSecteurs()
+        {
+            Bitmap bmp = Kernel.CarteManipulee.getBitmap();
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                Secteurs(null, -1).ToList().ForEach(s =>
+                                                                g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille))
+                    );
+            }
+
+            bmp.Save(@"./Temp/Secteurs.bmp");
+
+
+            Bitmap bmp2= Kernel.CarteManipulee.getBitmap();
+
+            using (Graphics g = Graphics.FromImage(bmp2))
+            {
+                Secteurs(new Coordonnees(20, 50),10).ToList().ForEach(s =>
+                                                                g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille))
+                    );
+            }
+
+            bmp2.Save(@"./Temp/Secteurs2.bmp");
+        }
         #endregion --> Méthodes d'instance
     }
 }
