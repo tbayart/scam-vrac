@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Capacites;
+using Vrac.SMA.Caracteristiques;
 using Vrac.SMA.Comportements;
 using Vrac.SMA.Evenements;
 using Vrac.SMA.Resultats;
@@ -12,6 +14,13 @@ namespace Vrac.SMA.Agents
     {
         #region --> Attributs
 
+        public Guid id;
+
+        public Agent()
+        {
+            id = Guid.NewGuid();
+        }
+
         // Les coordonnées de l'Agent.
         public Coordonnees Coord;
 
@@ -22,7 +31,7 @@ namespace Vrac.SMA.Agents
         public Dictionary<NomAction, Capacite> Capacites { get; set; }
 
         //public SortedList obj;
-        //public Dictionary<string, Caract<int>> carac; // Key = carac name
+        public Dictionary<LesCaracteristiques, Caracteristique> caracteristiques; // Key = carac name
         //public ArrayList knPlc; // Known place
         //public List<Item> invtry;
         //public bool evalAbilitReq = false;

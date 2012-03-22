@@ -102,7 +102,7 @@ namespace VracAgent
         }
 
 
-        private static int nbIter = 20;
+        private static int nbIter = 2000;
         private static bool stop = false;
         public static void Stop()
         {
@@ -131,11 +131,12 @@ namespace VracAgent
 
         public static void Init()
         {
-            carte = Vrac.GenerateurCarte.Carte.GetCarteTest(256, 256);
-            for (int i = 0; i < 50; i++)
+            int taille = 1024;
+            carte = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
+            for (int i = 0; i < taille/32; i++)
             {
                 Dryad d = create<Dryad>();
-                d.Coord = new Coordonnees(Randomizer.Next(5, 250), Randomizer.Next(5, 250));
+                d.Coord = new Coordonnees(Randomizer.Next((int)(taille * 0.05), (int)(taille * 0.95)), Randomizer.Next((int)(taille * 0.05), (int)(taille * 0.95)));
             }
             Start();
         }
@@ -146,12 +147,17 @@ namespace VracAgent
         public Dryad()
         {
             chaine = CatalogueBehavior.DryadTurn;
-            abilit = new Dictionary<string, Capacity>();
-            abilit["Teleport"] = new  ICanTeleport_L1();
-            abilit["Plant"] = new  ICanPlant();
-            abilit["Retreat"] = new  ICanRetreat();
-            abilit["Hear"] = new  ICanHear();
-            abilit["Send"] = new  ICanSpeak();
+            capacites = new Dictionary<string, Capacity>();
+            capacites["Teleport"] = new  ICanTeleport_L1();
+            capacites["Plant"] = new  ICanPlant();
+            capacites["Retreat"] = new  ICanRetreat();
+            capacites["Hear"] = new  ICanHear();
+            capacites["Send"] = new  ICanSpeak();
+
+            Caracteristique dep = CatalogueCaracteristique.DistanceDeDeplacement();
+            dep.valeur = 6;
+            caracteristiques[dep.nom] = dep;
+
         }
     }
 
@@ -161,11 +167,11 @@ namespace VracAgent
         public Coordonnees Coord;
 
         public Behavior chaine;
-        public Dictionary<string, Capacity> abilit;
+        public Dictionary<string, Capacity> capacites;
+        public Dictionary<string, Caracteristique> caracteristiques; // Key = carac name
 
         //public SortedList obj;
-        //public Dictionary<string, Caract<int>> carac; // Key = carac name
-
+        
         //public ArrayList knPlc; // Known place
         //public List<Item> invtry;
 
@@ -191,7 +197,7 @@ namespace VracAgent
 
         public Resultat Do(string ActionName, Agent cible, object p)
         {
-            return abilit[ActionName].doIt(this, cible, p);
+            return capacites[ActionName].doIt(this, cible, p);
         }
     }
 
@@ -438,23 +444,30 @@ namespace VracAgent
         }
     }
 
-    /*unused
-    public class Caract<T> // Generic mal adapté
+    public class Caracteristique // Generic mal adapté
     {
         public string nom;
-        public T valeur;
-
-        public static Caract<int> Faim()
-        {
-            return new Caract<int> { nom = "Faim" };
-        }
-
-        public static Caract<int> Sommeil()
-        {
-            return new Caract<int> { nom = "Sommeil" };
-        }
-
+        public int valeur;
     }
+
+    public class CatalogueCaracteristique
+    {
+        public static Caracteristique Faim()
+        {
+            return new Caracteristique { nom = "Faim" };
+        }
+
+        public static Caracteristique Sommeil()
+        {
+            return new Caracteristique { nom = "Sommeil" };
+        }
+
+        public static Caracteristique DistanceDeDeplacement()
+        {
+            return new Caracteristique { nom = "DistanceDeDeplacement" };
+        }
+    }
+    /*unused
     
     public class Item
     {

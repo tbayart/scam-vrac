@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Capacites;
+using Vrac.SMA.Caracteristiques;
 using Vrac.SMA.Comportements;
 
 namespace Vrac.SMA.Agents
@@ -22,6 +23,15 @@ namespace Vrac.SMA.Agents
             this.Capacites[NomAction.Mourir] = new Cap_Retirer();
             this.Capacites[NomAction.Ecouter] = new Cap_Ecouter();
             this.Capacites[NomAction.Parler] = new Cap_Parler();
+
+            caracteristiques = new Dictionary<LesCaracteristiques, Caracteristique>();
+            Caracteristique dep = CatalogueCaracteristique.DistanceDeDeplacement();
+            dep.valeur = 6;
+            caracteristiques[LesCaracteristiques.DistanceDeDeplacement] = dep;
+
+            Caracteristique solitude = CatalogueCaracteristique.Solitude();
+            solitude.valeur = 0;
+            caracteristiques[LesCaracteristiques.Solitude] = solitude;
         }
 
         #endregion --> Constructeurs

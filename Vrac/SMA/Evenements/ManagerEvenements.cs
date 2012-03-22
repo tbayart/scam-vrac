@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Vrac.SMA.Actions;
+using Vrac.SMA.Agents;
 
 namespace Vrac.SMA.Evenements
 {
@@ -60,12 +61,8 @@ namespace Vrac.SMA.Evenements
         {
             Kernel.Receive(evt);
 
-            // Récupérer les agents qui sont à portée.
-            var q = Kernel.PagesBlanches.Agents
-                .Where(
-                    a => evt.Portee == -1 || evt.Emetteur.Coord.getDistance(a.Coord) < evt.Portee && evt.Emetteur != a
-                );
-
+            var q = Kernel.PagesBlanches.Agents(evt.Emetteur!=null?evt.Emetteur.Coord:null, evt.Portee);
+            
             q.ToList().ForEach(
                     agtConcerne => agtConcerne.Do(NomAction.Ecouter, evt.Emetteur, evt)
                 );

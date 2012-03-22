@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using Vrac.SMA.Agents;
 using Vrac.SMA.Evenements;
@@ -26,18 +27,19 @@ namespace Vrac.SMA
 
         public static void Init()
         {
-            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(256, 256);
-
-            for (int i = 0; i < 50; i++)
+            int taille = 512;
+            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
+            PagesBlanches.CreerSecteurs(taille, taille, taille/2);
+            for (int i = 0; i < taille*taille/512; i++)
             {
-                Dryad d = Creer<Dryad>();
-                d.Coord = new Coordonnees(Randomizer.Next(5, 250), Randomizer.Next(5, 250));
+                Creer<Dryad>(taille);
             }
 
             Start();
         }
 
-        private static int nbIter = 20;
+        private static int nbIterMax = 1000;
+        private static int nbIter = nbIterMax;
 
         public static void Start()
         {
@@ -46,16 +48,19 @@ namespace Vrac.SMA
                 NewTurn();
                 Thread.Sleep(0);
 
-                Bitmap bmp = CarteManipulee.getBitmap();
-
-                using (Graphics g = Graphics.FromImage(bmp))
+                if (nbIter % 20 == 0)
                 {
-                    PagesBlanches.Agents.ForEach(a =>
-                        g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2)
-                        );
-                }
+                    Bitmap bmp = CarteManipulee.getBitmap();
 
-                bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:000}", (20 - nbIter)) + ".bmp");
+                        using (Graphics g = Graphics.FromImage(bmp))
+                        {
+                            PagesBlanches.Agents(null, -1).ToList().ForEach(a =>
+                                                                            g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2)
+                                );
+                        }
+
+                    bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
+                }
             }
         }
 
@@ -64,10 +69,13 @@ namespace Vrac.SMA
             S_Stop = true;
         }
 
-        public static T Creer<T>() where T : Agent, new()
+        public static T Creer<T>(int taille) where T : Agent, new()
         {
-            T agt = new T();
-            
+            T agt = new T
+                        {
+                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.01), (int) (taille*0.99)), Randomizer.Next((int) (taille*0.01), (int) (taille*0.99)))
+                        };
+
             PagesBlanches.add(agt);
 
             return agt;
@@ -78,6 +86,10 @@ namespace Vrac.SMA
             if (evt is Evt_Mort)
             {
                 PagesBlanches.del(evt.Emetteur);
+            }
+            if (evt is Evt_Deplace)
+            {
+                PagesBlanches.majAgent(evt.Emetteur);
             }
         }
 

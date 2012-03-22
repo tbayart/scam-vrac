@@ -58,8 +58,11 @@
     <Compile Include="SMA\Capacites\Cap_Retirer.cs" />
     <Compile Include="SMA\Capacites\Cap_Teleporter_N1.cs" />
     <Compile Include="SMA\Capacites\Cap_Teleporter_N2.cs" />
+    <Compile Include="SMA\Caracteristiques\Caracteristiques.cs" />
+    <Compile Include="SMA\Caracteristiques\CatalogueCaracteristiques.cs" />
     <Compile Include="SMA\Comportements\CatalogueComportements.cs" />
     <Compile Include="SMA\Comportements\Comportement.cs" />
+    <Compile Include="SMA\Secteur.cs" />
     <Compile Include="SMA\Evenements\Evenement.cs" />
     <Compile Include="SMA\Evenements\Evt_Deplace.cs" />
     <Compile Include="SMA\Evenements\Evt_Mort.cs" />
