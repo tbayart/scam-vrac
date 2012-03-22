@@ -16,7 +16,7 @@ namespace Vrac.SMA.Evenements
         public Evt_Deplace(Agent emetteur, int x, int y)
             : base(emetteur, new ArrayList() { x, y })
         {
-		    this.Portee = 5;
+		    this.Portee = 3;
         }
 
         #endregion --> Constructeurs

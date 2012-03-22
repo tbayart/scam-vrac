@@ -41,15 +41,15 @@ namespace ConsoleTest
 
             int test = 1;
 
-            if (test == 1) // On utilise le nouveau code, qui ne marche pas ;-(
+            if (test == 1) // On utilise le nouveau code
             {
-                ThreadStart tsMgrEvts = ManagerEvenements.Start;
-                Thread tMgrEvts = new Thread(tsMgrEvts);
-                tMgrEvts.Start();
+                //ThreadStart tsMgrEvts = ManagerEvenements.Start;
+                //Thread tMgrEvts = new Thread(tsMgrEvts);
+                //tMgrEvts.Start();
 
                 Kernel.Init();
 
-                ManagerEvenements.Stop();
+                //ManagerEvenements.Stop();
             }
             else // On utilise le code de VracAgent.cs
             {

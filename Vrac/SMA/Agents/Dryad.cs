@@ -30,7 +30,7 @@ namespace Vrac.SMA.Agents
             caracteristiques[LesCaracteristiques.DistanceDeDeplacement] = dep;
 
             Caracteristique solitude = CatalogueCaracteristique.Solitude();
-            solitude.valeur = 0;
+            solitude.valeur = 1;
             caracteristiques[LesCaracteristiques.Solitude] = solitude;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Vrac.GenerateurCarte;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Evenements;
@@ -35,7 +36,9 @@ namespace Vrac.SMA.Comportements
 
                     int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
+                    Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
                     Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist+1), agent.Coord.Y + Randomizer.Next(-dist, dist+1));
+
 
                     newCoord.X = Math.Max(0, newCoord.X);
                     newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length-1, newCoord.X);
@@ -46,6 +49,11 @@ namespace Vrac.SMA.Comportements
                     
                     if (res == Resultat.Succes)
                     {
+                        //lock (semaphore.sema)
+                        //{
+                        //    File.AppendAllText("C:/Trace.txt", agent.id + "(" + oldCoord + ") move by " + dist + " to " + newCoord + Environment.NewLine);
+                        //}
+
                         agent.Do(NomAction.Parler, agent, new Evt_Deplace(agent, agent.Coord.X, agent.Coord.Y));
                     }
 

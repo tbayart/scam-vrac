@@ -34,17 +34,17 @@ namespace Vrac.SMA
 
         public IEnumerable<Agent> Agents(Coordonnees position, double distance)
         {
-            //if (distance == -1)
+            if (distance == -1)
                 return clAgents;
 
-            //List<Agent> agentsDoubles = new List<Agent>();
+            List<Agent> agentsDoubles = new List<Agent>();
 
-            //Secteurs(position, distance)
-            //    .Select(s => s.Agents)
-            //    .ToList()
-            //    .ForEach(agentsDoubles.AddRange);
+            Secteurs(position, distance)
+                .Select(s => s.Agents)
+                .ToList()
+                .ForEach(agentsDoubles.AddRange);
 
-            //return agentsDoubles.Distinct();
+            return agentsDoubles.Distinct();
         }
 
         public IEnumerable<ISecteur> Secteurs(Coordonnees position, double distance)
@@ -60,13 +60,13 @@ namespace Vrac.SMA
 
         public void add(Agent agent)
         {
-            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0).ToList();   
+            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0).ToList();
             clAgents.Add(agent);
             annuaire.Add(agent, secteurs);
-            secteurs.ForEach(s=>s.Agents.Add(agent));
+            secteurs.ForEach(s => s.Agents.Add(agent));
         }
 
-        public void del(Agent agent) 
+        public void del(Agent agent)
         {
             annuaire.Remove(agent);
             clAgents.Remove(agent);

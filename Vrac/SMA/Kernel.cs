@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Vrac.SMA.Agents;
@@ -29,7 +30,7 @@ namespace Vrac.SMA
         {
             int taille = 512;
             CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
-            PagesBlanches.CreerSecteurs(taille, taille, taille/2);
+            PagesBlanches.CreerSecteurs(taille, taille, 256);
             for (int i = 0; i < taille*taille/512; i++)
             {
                 Creer<Dryad>(taille);
@@ -38,18 +39,28 @@ namespace Vrac.SMA
             Start();
         }
 
-        private static int nbIterMax = 1000;
+        private static int nbIterMax = 2000;
         private static int nbIter = nbIterMax;
 
         public static void Start()
         {
-            while (!S_Stop && --nbIter > 0)
+            while (!S_Stop && nbIter-- > 0)
             {
+                int count;
+                int countAsync;
+                int max;
+                int maxAsync;
+                ThreadPool.GetAvailableThreads(out count, out countAsync);
+                ThreadPool.GetMaxThreads(out max, out maxAsync);
+                while (countAsync < maxAsync &&  count < max )
+                {
+                    Thread.Sleep(100);
+                    ThreadPool.GetAvailableThreads(out count, out countAsync);
+                }
+
                 NewTurn();
                 Thread.Sleep(0);
 
-                if (nbIter % 20 == 0)
-                {
                     Bitmap bmp = CarteManipulee.getBitmap();
 
                         using (Graphics g = Graphics.FromImage(bmp))
@@ -59,6 +70,8 @@ namespace Vrac.SMA
                                 );
                         }
 
+                if (nbIter % 100 == 0)
+                {
                     bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
                 }
             }
@@ -73,7 +86,7 @@ namespace Vrac.SMA
         {
             T agt = new T
                         {
-                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.01), (int) (taille*0.99)), Randomizer.Next((int) (taille*0.01), (int) (taille*0.99)))
+                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.05), (int) (taille*0.95)), Randomizer.Next((int) (taille*0.05), (int) (taille*0.95)))
                         };
 
             PagesBlanches.add(agt);
@@ -85,19 +98,39 @@ namespace Vrac.SMA
         {
             if (evt is Evt_Mort)
             {
-                PagesBlanches.del(evt.Emetteur);
+                lock (PagesBlanches)
+                {
+                    PagesBlanches.del(evt.Emetteur);
+                }
             }
             if (evt is Evt_Deplace)
             {
-                PagesBlanches.majAgent(evt.Emetteur);
+                lock (PagesBlanches)
+                {
+                    PagesBlanches.majAgent(evt.Emetteur);
+                }
             }
         }
+
+        private static int count = 0;
 
         public static void NewTurn()
         {
             ManagerEvenements.Poster(Evenement.NewTurn);
+
+            //lock (semaphore.sema)
+            //{
+            //    File.AppendAllText("C:/Trace.txt", "----------------------   " + count++ + "   ----------------------" + Environment.NewLine);
+
+            //    PagesBlanches.Agents(null, -1).ToList().ForEach(a => File.AppendAllText("C:/Trace.txt", a.Coord.ToString() + Environment.NewLine));
+            //}
         }
 
         #endregion --> Méthodes statiques
+    }
+
+    static class semaphore
+    {
+        public static object sema = new object();
     }
 }
