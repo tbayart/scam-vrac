@@ -69,17 +69,22 @@ namespace Vrac.SMA.Evenements
                 return;
             Kernel.Receive(evt);
 
-            List<Agent> lst = null;
-            lock (Kernel.PagesBlanches)
+            if (evt.Portee == 0)
+                evt.Emetteur.Recevoir(evt);
+
+            else
             {
-                lst = Kernel.PagesBlanches.Agents(null, -1 /*(evt.Emetteur!=null?evt.Emetteur.Coord:null, evt.Portee)*/).Where(
-                    a => evt.Portee == -1 || evt.Emetteur.Coord.getDistance(a.Coord) < evt.Portee && evt.Emetteur != a).ToList();
-            }
-            
-            lst.ForEach(
+                List<Agent> lst = null;
+                lock (Kernel.PagesBlanches)
+                {
+                    lst = Kernel.PagesBlanches.Agents(null, -1 /*(evt.Emetteur!=null?evt.Emetteur.Coord:null, evt.Portee)*/).Where(
+                        a => evt.Portee == -1 || evt.Emetteur.Coord.getDistance(a.Coord) < evt.Portee && evt.Emetteur != a).ToList();
+                }
+
+                lst.ForEach(
                     agtConcerne => agtConcerne.Do(NomAction.Ecouter, evt.Emetteur, evt)
                     );
-            
+            }
         }
 
         #endregion --> Méthodes statiques

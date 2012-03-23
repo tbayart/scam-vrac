@@ -5,7 +5,7 @@ namespace Vrac.SMA.Evenements
 {
     public class Evenement
     {
-        public static Evenement NewTurn;
+        public static Evenement FirstTurn;
 
         #region --> Attributs
 
@@ -28,7 +28,7 @@ namespace Vrac.SMA.Evenements
         static Evenement()
         {
             // Initialisation des Evenement statiques.
-            NewTurn = new Evenement(null, null, -1);
+            FirstTurn = new Evenement(null, null, -1);
         }
 
         /// <summary>

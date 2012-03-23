@@ -70,6 +70,7 @@
     <Compile Include="SMA\Kernel.cs" />
     <Compile Include="SMA\Resultats\Resultat.cs" />
     <Compile Include="Tools\Coordonnees.cs" />
+    <Compile Include="Tools\HPT.cs" />
     <Compile Include="Tools\Distribution.cs" />
     <Compile Include="Tools\Randomizer.cs" />
     <Compile Include="VracAgent.cs" />

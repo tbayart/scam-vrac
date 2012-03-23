@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Vrac.GenerateurCarte;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Evenements;
@@ -25,9 +26,10 @@ namespace Vrac.SMA.Comportements
             DryadTurn = new Comportement()
             {
                 IsForwarder = (e, agent) => false,
-                IsHandler = (e, agent) => e == Evenement.NewTurn,
+                IsHandler = (e, agent) => e == Evenement.FirstTurn || e.Portee==0,
                 Handle = (e, agent) =>
                 {
+                    ThreadPool.QueueUserWorkItem(HighPerfTimer.timePoint,agent.id.ToString());
                     if (agent.caracteristiques[LesCaracteristiques.Solitude].valeur > 20)
                         agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 6;
 
@@ -58,7 +60,9 @@ namespace Vrac.SMA.Comportements
                     }
 
                     agent.caracteristiques[LesCaracteristiques.Solitude].valeur++;
-                    
+
+                    Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
+                    agent.Envoyer(new Evenement(agent, null, 0));
                 }
             };
 

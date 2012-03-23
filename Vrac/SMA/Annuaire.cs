@@ -49,13 +49,19 @@ namespace Vrac.SMA
 
         public IEnumerable<ISecteur> Secteurs(Coordonnees position, double distance)
         {
-            return SecteurPrincipal.Secteurs(position, distance).OfType<FloorSecteur>();
+            return SecteurPrincipal.Secteurs( position, distance).OfType<FloorSecteur>();
         }
 
         public void majAgent(Agent a)
         {
-            del(a);
-            add(a);
+            //del(a);
+            //add(a);
+            if (!this.annuaire.ContainsKey(a))
+               this.annuaire.Add(a,new List<ISecteur>());
+
+            this.annuaire[a].ForEach(s => s.Agents.Remove(a));
+            this.annuaire[a] = this.Secteurs(a.Coord, 0.1).ToList();
+            this.annuaire[a].ForEach(s => s.Agents.Add(a));
         }
 
         public void add(Agent agent)

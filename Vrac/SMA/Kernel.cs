@@ -26,9 +26,10 @@ namespace Vrac.SMA
 
         #region --> Méthodes statiques
 
+
         public static void Init()
         {
-            int taille = 1024;
+            int taille = 256;
             CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
             PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
 
@@ -42,42 +43,32 @@ namespace Vrac.SMA
             Start();
         }
 
-        private static int nbIterMax = 2000;
+        private static int nbIterMax = 10;
         private static int nbIter = nbIterMax;
 
         public static void Start()
         {
-            while (!S_Stop && nbIter-- > 0)
+            FirstTurn();
+            //while (!S_Stop /*&& nbIter-- > 0*/)
+            //{
+            //    Thread.Sleep(1);
+
+            //    //Draw().Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
+                
+            //}
+        }
+
+        public static Bitmap Draw()
+        {
+            Bitmap bmp = CarteManipulee.getBitmap();
+
+            using (Graphics g = Graphics.FromImage(bmp))
             {
-                int count;
-                int countAsync;
-                int max;
-                int maxAsync;
-                ThreadPool.GetAvailableThreads(out count, out countAsync);
-                ThreadPool.GetMaxThreads(out max, out maxAsync);
-                while (countAsync < maxAsync &&  count < max )
-                {
-                    Thread.Sleep(100);
-                    ThreadPool.GetAvailableThreads(out count, out countAsync);
-                }
-
-                NewTurn();
-                Thread.Sleep(0);
-
-                    Bitmap bmp = CarteManipulee.getBitmap();
-
-                        using (Graphics g = Graphics.FromImage(bmp))
-                        {
-                            PagesBlanches.Agents(null, -1).ToList().ForEach(a =>
-                                                                            g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2)
-                                );
-                        }
-
-                if (nbIter % 250 == 0)
-                {
-                    bmp.Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
-                }
+                PagesBlanches.Agents(null, -1).ToList().ForEach(a =>
+                                                                g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2)
+                    );
             }
+            return bmp;
         }
 
         public static void Stop()
@@ -89,7 +80,7 @@ namespace Vrac.SMA
         {
             T agt = new T
                         {
-                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.05), (int) (taille*0.95)), Randomizer.Next((int) (taille*0.05), (int) (taille*0.95)))
+                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.001), (int) (taille*0.999)), Randomizer.Next((int) (taille*0.001), (int) (taille*0.999)))
                         };
 
             PagesBlanches.add(agt);
@@ -106,7 +97,7 @@ namespace Vrac.SMA
                     PagesBlanches.del(evt.Emetteur);
                 }
             }
-            if (evt is Evt_Deplace)
+            else if (evt is Evt_Deplace)
             {
                 lock (PagesBlanches)
                 {
@@ -117,9 +108,9 @@ namespace Vrac.SMA
 
         private static int count = 0;
 
-        public static void NewTurn()
+        public static void FirstTurn()
         {
-            ManagerEvenements.Poster(Evenement.NewTurn);
+            ManagerEvenements.Poster(Evenement.FirstTurn);
 
             //lock (semaphore.sema)
             //{

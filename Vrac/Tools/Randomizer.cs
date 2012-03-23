@@ -20,6 +20,7 @@ namespace Vrac.Tools
             S_random = new Random();
         }
 
+
         #endregion -> Constructeurs statique
 
         #region -> Méthodes statiques

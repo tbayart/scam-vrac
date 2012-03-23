@@ -13,6 +13,7 @@ namespace Vrac.SMA.Comportements
         Sommeil,
         DistanceDeDeplacement,
         Solitude,
+        LenteurEsprit,
     }
 
     public class CatalogueCaracteristique
@@ -35,6 +36,11 @@ namespace Vrac.SMA.Comportements
         public static Caracteristique Solitude()
         {
             return new Caracteristique { nom = LesCaracteristiques.Solitude.ToString() };
+        }
+
+        public static Caracteristique LenteurEsprit()
+        {
+            return new Caracteristique { nom = LesCaracteristiques.LenteurEsprit.ToString() };
         }
     }
 }

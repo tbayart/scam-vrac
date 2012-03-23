@@ -32,6 +32,10 @@ namespace Vrac.SMA.Agents
             Caracteristique solitude = CatalogueCaracteristique.Solitude();
             solitude.valeur = 1;
             caracteristiques[LesCaracteristiques.Solitude] = solitude;
+
+            Caracteristique LenteurEsprit = CatalogueCaracteristique.LenteurEsprit();
+            LenteurEsprit.valeur = 10;
+            caracteristiques[LesCaracteristiques.LenteurEsprit] = LenteurEsprit;
         }
 
         #endregion --> Constructeurs
