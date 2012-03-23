@@ -47,7 +47,7 @@ namespace Vrac.SMA.Agents
 
         public void Envoyer(Evenement evt)
         {
-            ManagerEvenements.Poster(evt);
+            Kernel.managerEvenements.Poster(evt);
         }
 
         public Resultat Do(NomAction nomAction, Agent cible, object p)

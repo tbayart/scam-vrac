@@ -29,7 +29,7 @@ namespace Vrac.SMA.Comportements
                 IsHandler = (e, agent) => e == Evenement.FirstTurn || e.Portee==0,
                 Handle = (e, agent) =>
                 {
-                    ThreadPool.QueueUserWorkItem(HighPerfTimer.timePoint,agent.id.ToString());
+                    //ThreadPool.QueueUserWorkItem(HighPerfTimer.timePoint,agent.id.ToString());
                     if (agent.caracteristiques[LesCaracteristiques.Solitude].valeur > 20)
                         agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 6;
 

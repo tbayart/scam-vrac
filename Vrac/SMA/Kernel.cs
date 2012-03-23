@@ -16,6 +16,8 @@ namespace Vrac.SMA
 
         #region --> Attributs
 
+        public static ManagerEvenements managerEvenements;
+
         public static Annuaire PagesBlanches = new Annuaire();
 
         public static Vrac.GenerateurCarte.Carte CarteManipulee;
@@ -29,11 +31,11 @@ namespace Vrac.SMA
 
         public static void Init()
         {
-            int taille = 256;
+            int taille = 1024;
             CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
             PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
-
             PagesBlanches.DrawSecteurs();
+            managerEvenements = new ManagerEvenements(taille/10);
 
             for (int i = 0; i < taille * taille / 512; i++)
             {
@@ -43,19 +45,19 @@ namespace Vrac.SMA
             Start();
         }
 
-        private static int nbIterMax = 10;
+        private static int nbIterMax = 100;
         private static int nbIter = nbIterMax;
 
         public static void Start()
         {
             FirstTurn();
-            //while (!S_Stop /*&& nbIter-- > 0*/)
-            //{
-            //    Thread.Sleep(1);
+            while (!S_Stop && nbIter-- > 0)
+            {
+                Thread.Sleep(1000);
 
-            //    //Draw().Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
+            Draw().Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
                 
-            //}
+            }
         }
 
         public static Bitmap Draw()
@@ -110,7 +112,7 @@ namespace Vrac.SMA
 
         public static void FirstTurn()
         {
-            ManagerEvenements.Poster(Evenement.FirstTurn);
+            managerEvenements.Poster(Evenement.FirstTurn);
 
             //lock (semaphore.sema)
             //{
