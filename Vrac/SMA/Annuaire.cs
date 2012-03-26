@@ -52,16 +52,22 @@ namespace Vrac.SMA
             return SecteurPrincipal.Secteurs( position, distance).OfType<FloorSecteur>();
         }
 
+        private void newAgent(Agent a)
+        {
+            this.annuaire.Add(a, this.Secteurs(a.Coord, 0.1).ToList());
+            this.annuaire[a].ForEach(s => s.Agents.Add(a));
+        }
+
         public void majAgent(Agent a)
         {
-            //del(a);
-            //add(a);
             if (!this.annuaire.ContainsKey(a))
-               this.annuaire.Add(a,new List<ISecteur>());
-
-            this.annuaire[a].ForEach(s => s.Agents.Remove(a));
-            this.annuaire[a] = this.Secteurs(a.Coord, 0.1).ToList();
-            this.annuaire[a].ForEach(s => s.Agents.Add(a));
+                newAgent(a);
+            else
+            {
+                this.annuaire[a].ForEach(s => s.Agents.Remove(a));
+                this.annuaire[a] = this.Secteurs(a.Coord, 0.1).ToList();
+                this.annuaire[a].ForEach(s => s.Agents.Add(a));
+            }
         }
 
         public void add(Agent agent)
@@ -76,8 +82,8 @@ namespace Vrac.SMA
         {
             annuaire.Remove(agent);
             clAgents.Remove(agent);
-            List<ISecteur> secteurs = this.Secteurs(agent.Coord, 0.1).ToList();
-            secteurs.ForEach(s => s.Agents.Remove(agent));
+            this.Secteurs(agent.Coord, 0.1).ToList()
+                .ForEach(s => s.Agents.Remove(agent));
         }
 
         public void CreerSecteurPrincipal(int taille_Carte, int x_SecteurAcreer, int y_SecteurAcreer, int taille_secteur)

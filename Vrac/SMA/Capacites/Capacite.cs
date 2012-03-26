@@ -23,10 +23,10 @@ namespace Vrac.SMA.Capacites
         #region --> Attributs
 
         // Dictionnaire des Action à effectuer pour chaque Resultat possible.
-        public Dictionary<Resultat, Vrac.SMA.Actions.Action> Actions { get; set; }
+        public Dictionary<Resultat, Actions.Action> Actions;
 
         // La distribution des Resultat possibles.
-        public Distribution<Resultat> Proba { get; set; }
+        public Distribution<Resultat> Proba;
 
         #endregion --> Attributs
 

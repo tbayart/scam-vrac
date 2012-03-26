@@ -25,17 +25,10 @@ namespace Vrac.SMA.Agents
             this.Capacites[NomAction.Parler] = new Cap_Parler();
 
             caracteristiques = new Dictionary<LesCaracteristiques, Caracteristique>();
-            Caracteristique dep = CatalogueCaracteristique.DistanceDeDeplacement();
-            dep.valeur = 6;
-            caracteristiques[LesCaracteristiques.DistanceDeDeplacement] = dep;
 
-            Caracteristique solitude = CatalogueCaracteristique.Solitude();
-            solitude.valeur = 1;
-            caracteristiques[LesCaracteristiques.Solitude] = solitude;
-
-            Caracteristique LenteurEsprit = CatalogueCaracteristique.LenteurEsprit();
-            LenteurEsprit.valeur = 10;
-            caracteristiques[LesCaracteristiques.LenteurEsprit] = LenteurEsprit;
+            caracteristiques[LesCaracteristiques.DistanceDeDeplacement] = CatalogueCaracteristique.DistanceDeDeplacement(6);
+            caracteristiques[LesCaracteristiques.Solitude] = CatalogueCaracteristique.Solitude(1);
+            caracteristiques[LesCaracteristiques.LenteurEsprit] = CatalogueCaracteristique.LenteurEsprit(10);
         }
 
         #endregion --> Constructeurs

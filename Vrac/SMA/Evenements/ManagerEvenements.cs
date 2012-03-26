@@ -154,8 +154,9 @@ namespace Vrac.SMA.Evenements
                 List<Agent> lst = null;
                 lock (Kernel.PagesBlanches)
                 {
-                    lst = Kernel.PagesBlanches.Agents(null, -1 /*(evt.Emetteur!=null?evt.Emetteur.Coord:null, evt.Portee)*/).Where(
-                        a => evt.Portee == -1 || evt.Emetteur.Coord.getDistance(a.Coord) < evt.Portee && evt.Emetteur != a).ToList();
+                    lst = Kernel.PagesBlanches
+                                .Agents((evt.Emetteur!=null?evt.Emetteur.Coord:null), evt.Portee)
+                                .Where(a => evt.Emetteur != a ).ToList();
                 }
 
                 lst.ForEach(

@@ -10,13 +10,13 @@ namespace Vrac.SMA.Evenements
         #region --> Attributs
 
         // La distance maximale à laquelle l'Evenement est diffusé.
-        public double Portee { get; protected set; }
+        public double Portee;
 
         // L'emetteur de l'Evenement.
-        public Agent Emetteur { get; protected set; }
+        public Agent Emetteur;
 
         // Les paramètres de l'Evenement.
-        public ArrayList Parametres { get; protected set; }
+        public ArrayList Parametres;
 
         #endregion --> Attributs
 

@@ -25,10 +25,10 @@ namespace Vrac.SMA.Agents
         public Coordonnees Coord;
 
         // La chaîne de responsabilité des Comportement de l'Agent.
-        public Comportement Chaine { get; set; }
+        public Comportement Chaine;
 
         // Le dictionnaire des Capacite de l'Agent.
-        public Dictionary<NomAction, Capacite> Capacites { get; set; }
+        public Dictionary<NomAction, Capacite> Capacites;
 
         //public SortedList obj;
         public Dictionary<LesCaracteristiques, Caracteristique> caracteristiques; // Key = carac name

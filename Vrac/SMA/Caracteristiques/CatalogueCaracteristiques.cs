@@ -18,29 +18,29 @@ namespace Vrac.SMA.Comportements
 
     public class CatalogueCaracteristique
     {
-        public static Caracteristique Faim()
+        public static Caracteristique Faim(int val)
         {
-            return new Caracteristique { nom = LesCaracteristiques.Faim.ToString() };
+            return new Caracteristique {valeur = val, nom = LesCaracteristiques.Faim.ToString() };
         }
 
-        public static Caracteristique Sommeil()
+        public static Caracteristique Sommeil(int val)
         {
-            return new Caracteristique { nom = LesCaracteristiques.Sommeil.ToString() };
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.Sommeil.ToString() };
         }
 
-        public static Caracteristique DistanceDeDeplacement()
+        public static Caracteristique DistanceDeDeplacement(int val)
         {
-            return new Caracteristique { nom = LesCaracteristiques.DistanceDeDeplacement.ToString() };
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.DistanceDeDeplacement.ToString() };
         }
 
-        public static Caracteristique Solitude()
+        public static Caracteristique Solitude(int val)
         {
-            return new Caracteristique { nom = LesCaracteristiques.Solitude.ToString() };
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.Solitude.ToString() };
         }
 
-        public static Caracteristique LenteurEsprit()
+        public static Caracteristique LenteurEsprit(int val)
         {
-            return new Caracteristique { nom = LesCaracteristiques.LenteurEsprit.ToString() };
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.LenteurEsprit.ToString() };
         }
     }
 }

@@ -4,30 +4,10 @@ namespace Vrac.Tools
 {
     public class Coordonnees
     {
-        #region -> Attributs
-
-        // La coordonnée x.
-        private int _x;
-
-        // La coordonnée y.
-        private int _y;
-
-        #endregion -> Attributs
-
         #region -> Propriétés
 
-        public int X
-        {
-            get { return this._x; }
-            set { this._x = value; }
-        }
-
-        public int Y
-        {
-            get { return this._y; }
-            set { this._y = value; }
-        }
-
+        public int X;
+        public int Y;
         #endregion -> Propriétés
 
         #region -> Constructeurs
@@ -47,8 +27,8 @@ namespace Vrac.Tools
         /// <param name="y">La coordonnée y.</param>
         public Coordonnees(int x, int y)
         {
-            this._x = x;
-            this._y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         #endregion -> Constructeurs
@@ -64,12 +44,18 @@ namespace Vrac.Tools
 
         public override string ToString()
         {
-            return String.Format("({0} ; {1})", this._x, this._y);
+            return String.Format("({0} ; {1})", this.X, this.Y);
         }
 
         public int getDistance(Coordonnees cible)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow(this.X - cible.X, 2) + Math.Pow(this.Y - cible.Y, 2)), 0);
+        }
+        public int getDistanceCarree(Coordonnees cible)
+        {
+            int _X = this.X - cible.X;
+            int _Y = this.Y - cible.Y;
+            return _X*_X + _Y*_Y;
         }
 
         #endregion -> publiques

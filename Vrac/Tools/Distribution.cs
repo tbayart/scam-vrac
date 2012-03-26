@@ -31,12 +31,12 @@ namespace Vrac.Tools
             double d = Randomizer.NextDouble();
             double sommeSeuils = 0;
 
-            foreach (T cle in this.DicoSeuils.Keys)
+            foreach (var info in this.DicoSeuils)
             {
-                sommeSeuils += this.DicoSeuils[cle];
+                sommeSeuils += info.Value;
 
                 if (d < sommeSeuils)
-                    return cle;
+                    return info.Key;
             }
 
             throw new Exception("Erreur !");

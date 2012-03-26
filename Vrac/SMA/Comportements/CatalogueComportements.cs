@@ -38,7 +38,7 @@ namespace Vrac.SMA.Comportements
 
                     int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
-                    Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
+                    //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
                     Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist+1), agent.Coord.Y + Randomizer.Next(-dist, dist+1));
 
 
@@ -76,7 +76,7 @@ namespace Vrac.SMA.Comportements
                         return;
 
                     agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 1;
-                    agent.caracteristiques[LesCaracteristiques.Solitude].valeur /= 10;
+                    agent.caracteristiques[LesCaracteristiques.Solitude].valeur >>= 3;
                     Resultat res = agent.Do(NomAction.Planter, agent, new Coordonnees(agent.Coord.X, agent.Coord.Y));
 
                     if (res == Resultat.Succes)

@@ -50,10 +50,18 @@ namespace Vrac.SMA
         public IEnumerable<ISecteur> Secteurs(Coordonnees position, double distance)
         {
             List<ISecteur> ret = new List<ISecteur>();
-            if(distance==-1) 
+            if (distance == -1)
                 ret.AddRange(clSecteurs);
             else
-                ret.AddRange(clSecteurs.Where(s => s.Centre.getDistance(position) < s.Taille + distance));
+            {
+
+                ret.AddRange(clSecteurs.Where(s =>
+                                                  {
+                                                        double distanceCarree = s.Taille + distance;
+                                                        distanceCarree *= distanceCarree;
+                                                      return s.Centre.getDistanceCarree(position) < distanceCarree;
+                                                  }));
+            }
 
             List<ISecteur> enfants = new List<ISecteur>();
             ret.ForEach(s => enfants.AddRange(s.Secteurs(position, distance)));
@@ -69,11 +77,13 @@ namespace Vrac.SMA
         {
             double RacineDeDeuxSurDeuxR = RacineDeDeuxSurDeux*parent.Taille;
             
-            int x_Carre = (int) (parent.Centre.X - RacineDeDeuxSurDeuxR/2);
-            int y_Carre = (int) (parent.Centre.Y - RacineDeDeuxSurDeuxR/2);
-            int taille_Carre = (int)RacineDeDeuxSurDeuxR;
-
-            CreerSecteurs(parent, x_Carre, y_Carre, taille_Carre, taille_secteur, encore);
+            CreerSecteurs(
+                            parent, 
+                            (int) (parent.Centre.X - RacineDeDeuxSurDeuxR/2), 
+                            (int) (parent.Centre.Y - RacineDeDeuxSurDeuxR/2), 
+                            (int)RacineDeDeuxSurDeuxR, 
+                            taille_secteur, 
+                            encore);
         }
 
         public void CreerSecteurs(ISecteur parent, int x_Carre, int y_Carre, int taille_Carre, int taille_secteur, bool encore)
@@ -91,18 +101,16 @@ namespace Vrac.SMA
                     if (encore)
                         CreerSecteurs(enfant, taille_secteur/4, false);
 
-                    x_SecteurAcreer += (int)(taille_secteur);
+                    x_SecteurAcreer += (taille_secteur);
                     if (!lastX && x_SecteurAcreer > x_Carre + taille_Carre)
                     {
                         x_SecteurAcreer = x_Carre + taille_Carre;
                         lastX = true;
                     }
                 } while (x_SecteurAcreer <= x_Carre + taille_Carre);
-
-                lastX = false;
-
+                
                 x_SecteurAcreer = 0;
-                y_SecteurAcreer += (int) (taille_secteur);
+                y_SecteurAcreer += (taille_secteur);
 
                 if (!lastY && y_SecteurAcreer> y_Carre + taille_Carre)
                 {
@@ -117,11 +125,11 @@ namespace Vrac.SMA
         {
             ISecteur s = secteurIntermediaire ?
 
-                                                  (ISecteur) new Secteur()
-                                                                 {
-                                                                     Centre = new Coordonnees(xSecteurAcreer, ySecteurAcreer),
-                                                                     Taille = tailleSecteur
-                                                                 }
+                             (ISecteur) new Secteur()
+                                                {
+                                                    Centre = new Coordonnees(xSecteurAcreer, ySecteurAcreer),
+                                                    Taille = tailleSecteur
+                                                }
 
                              : (ISecteur) new FloorSecteur()
                                               {

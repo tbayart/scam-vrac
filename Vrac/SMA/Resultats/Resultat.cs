@@ -47,5 +47,23 @@
         }
 
         #endregion --> Méthodes d'instance
+
+        public bool Equals(Resultat other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return other._id == this._id;
+        }
+
+        public override int GetHashCode()
+        {
+            return this._id;
+        }
     }
 }
