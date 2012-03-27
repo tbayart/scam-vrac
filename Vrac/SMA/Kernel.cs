@@ -32,32 +32,45 @@ namespace Vrac.SMA
         public static void Init()
         {
             int taille = 1024;
-            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTest(taille, taille);
+            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTerre(taille, taille);
             PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
-            PagesBlanches.DrawSecteurs();
-            managerEvenements = new ManagerEvenements(taille/10);
+            //PagesBlanches.DrawSecteurs();
+            managerEvenements = new ManagerEvenements(150);
 
-            for (int i = 0; i < taille * taille / 512; i++)
-            {
-                Creer<Dryad>(taille);
-            }
-
-            Start();
+            
         }
 
-        private static int nbIterMax = 100;
-        private static int nbIter = nbIterMax;
+        public static void InitDryad()
+        {
+            for (int i = 0; i < 2500; i++) //taille * taille / 512
+            {
+                Creer<Dryad>(1024);
+            }
+
+        }
+
+        public static void InitCitizen()
+        {
+            for (int i = 0; i < 25; i++) //taille * taille / 512
+            {
+                Creer<Citizen>(1024);
+            }
+
+        }
+
+        //private static int nbIterMax = 2;
+        //private static int nbIter = nbIterMax;
 
         public static void Start()
         {
             FirstTurn();
-            while (!S_Stop && nbIter-- > 0)
-            {
-                Thread.Sleep(1000);
+            //while (!S_Stop && nbIter-- > 0)
+            //{
+            //    Thread.Sleep(1000);
 
-            Draw().Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
+            //Draw().Save(@"./Temp/AgentEtape" + String.Format("{0:00000}", (nbIterMax - nbIter)) + ".bmp");
                 
-            }
+            //}
         }
 
         public static Bitmap Draw()
@@ -82,7 +95,7 @@ namespace Vrac.SMA
         {
             T agt = new T
                         {
-                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.001), (int) (taille*0.999)), Randomizer.Next((int) (taille*0.001), (int) (taille*0.999)))
+                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.1), (int) (taille*0.90)), Randomizer.Next((int) (taille*0.1), (int) (taille*0.90)))
                         };
 
             PagesBlanches.add(agt);
@@ -108,8 +121,6 @@ namespace Vrac.SMA
             }
         }
 
-        private static int count = 0;
-
         public static void FirstTurn()
         {
             managerEvenements.Poster(Evenement.FirstTurn);
@@ -123,6 +134,11 @@ namespace Vrac.SMA
         }
 
         #endregion --> Méthodes statiques
+
+        public static void KillAll()
+        {
+            PagesBlanches.clAgents.ForEach(a => PagesBlanches.del(a)); // raccourci pour tout virer
+        }
     }
 
     static class semaphore

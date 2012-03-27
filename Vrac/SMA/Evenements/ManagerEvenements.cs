@@ -95,6 +95,7 @@ namespace Vrac.SMA.Evenements
         readonly object _locker = new object();
         Thread[] _workers;
         Queue<Evenement> _itemQ = new Queue<Evenement>();
+        public int count = 0;
 
         public ManagerEvenements(int workerCount )
         {
@@ -135,11 +136,13 @@ namespace Vrac.SMA.Evenements
                 {
                     while (_itemQ.Count == 0) Monitor.Wait(_locker);
                     item = _itemQ.Dequeue();
+                    count++;
                 }
                 if (item == null) return;         // This signals our exit.
                 Do (item);                           // Execute item.
             }
         }
+
 
 
         private static void Do(Evenement evt)

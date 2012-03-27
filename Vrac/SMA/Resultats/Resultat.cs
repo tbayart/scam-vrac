@@ -51,14 +51,10 @@
         public bool Equals(Resultat other)
         {
             if (ReferenceEquals(null, other))
-            {
                 return false;
-            }
             if (ReferenceEquals(this, other))
-            {
                 return true;
-            }
-            return other._id == this._id;
+            return other._id.Equals(this._id);
         }
 
         public override int GetHashCode()

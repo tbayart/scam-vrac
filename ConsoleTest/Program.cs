@@ -39,28 +39,46 @@ namespace ConsoleTest
         {
             Console.WriteLine("Heure début : {0}", DateTime.Now.ToLongTimeString());
 
-            int test = 1;
+            //int test = 1;
 
-            if (test == 1) // On utilise le nouveau code
+            //if (test == 1) // On utilise le nouveau code
             {
                 //ThreadStart tsMgrEvts = ManagerEvenements.Start;
                 //Thread tMgrEvts = new Thread(tsMgrEvts);
                 //tMgrEvts.Start();
 
+                int nbSec = 2;
                 Kernel.Init();
+                Kernel.InitCitizen();
+                Kernel.Start();
+
+                int precedenteValeur = 0;
+                for (int i = 0; i < nbSec; i++)
+                {
+                    Thread.Sleep(1000);
+                    int count = Kernel.managerEvenements.count;
+                    Console.WriteLine(count- precedenteValeur + " evt");
+                    precedenteValeur = count;
+                }
+                Kernel.KillAll();
+
+                Kernel.Draw().Save(@"./Temp/after.bmp");
+
+                Kernel.managerEvenements.Shutdown(true);
+                Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evt à la seconde pendant " + nbSec + " sec");
 
                 //ManagerEvenements.Stop();
             }
-            else // On utilise le code de VracAgent.cs
-            {
-                ThreadStart tsMgrEvts = VracAgent.EvtDispatcher.Start;
-                Thread tMgrEvts = new Thread(tsMgrEvts);
-                tMgrEvts.Start();
+            //else // On utilise le code de VracAgent.cs
+            //{
+            //    ThreadStart tsMgrEvts = VracAgent.EvtDispatcher.Start;
+            //    Thread tMgrEvts = new Thread(tsMgrEvts);
+            //    tMgrEvts.Start();
 
-                VracAgent.Kernel.Init();
+            //    VracAgent.Kernel.Init();
 
-                VracAgent.EvtDispatcher.Stop();
-            }
+            //    VracAgent.EvtDispatcher.Stop();
+            //}
 
             Console.WriteLine("Heure fin   : {0}", DateTime.Now.ToLongTimeString());
             Console.WriteLine("Terminé !");

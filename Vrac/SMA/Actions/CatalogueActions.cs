@@ -1,4 +1,5 @@
-﻿using Vrac.SMA.Evenements;
+﻿using System;
+using Vrac.SMA.Evenements;
 using Vrac.Tools;
 
 namespace Vrac.SMA.Actions
@@ -14,6 +15,8 @@ namespace Vrac.SMA.Actions
         public static Action None;
         public static Action Ecouter;
         public static Action Parler;
+        public static Action Construire;
+        public static Action ConstruireRoute;
 
         #region --> Constructeurs
 
@@ -39,6 +42,43 @@ namespace Vrac.SMA.Actions
                 {
                     Coordonnees c = ((Coordonnees)coord);
                     Kernel.CarteManipulee._carte[c.X][c.Y] = Vrac.GenerateurCarte.TypeElementBiome.Arbre;
+                }
+            };
+
+            ConstruireRoute = new Action()
+            {
+                doIt = (acteur, cible, coord) =>
+                {
+                    Coordonnees c = ((Coordonnees)coord);
+                    try
+                    {
+                        Kernel.CarteManipulee._carte[c.X][c.Y] = Vrac.GenerateurCarte.TypeElementBiome.Route;
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+            };
+
+            Construire = new Action()
+            {
+                doIt = (acteur, cible, coord) =>
+                {
+                    Coordonnees c = ((Coordonnees)coord);
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            if (c.X + i > 0
+                                && c.Y + j > 0
+                                && c.X + i < Kernel.CarteManipulee._carte.Length
+                                && c.Y + j < Kernel.CarteManipulee._carte.Length
+                                && (i!=0 && j!=0)
+                                )
+                            Kernel.CarteManipulee._carte[c.X+i][c.Y+j] = Vrac.GenerateurCarte.TypeElementBiome.Maison;
+                        }
+                    }
                 }
             };
 

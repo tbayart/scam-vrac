@@ -13,6 +13,8 @@ namespace Vrac.SMA.Actions
         Parler,
         Planter,
         Teleporter,
+        Construire,
+        ConstruireRoute,
     }
 
     public class Action

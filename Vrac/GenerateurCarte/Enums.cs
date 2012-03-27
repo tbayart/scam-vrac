@@ -11,5 +11,7 @@
         Eau,
         Pierre,
         Arbre,
+        Maison,
+        Route,
     }
 }

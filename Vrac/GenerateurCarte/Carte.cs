@@ -30,7 +30,25 @@ namespace Vrac.GenerateurCarte
 
         #region -> Méthodes statiques
 
-        private static Carte GetCarteVide(int largeur, int hauteur)
+        public static Carte GetCarteTerre(int largeur, int hauteur)
+        {
+            Carte map = new Carte();
+
+            map._carte = new TypeElementBiome[largeur][];
+
+            for (int i = 0; i < largeur; i++)
+            {
+                map._carte[i] = new TypeElementBiome[hauteur];
+
+                for (int j = 0; j < hauteur; j++)
+                {
+                    map._carte[i][j] = TypeElementBiome.Terre;
+                }
+            }
+
+            return map;
+        }
+        public static Carte GetCarteVide(int largeur, int hauteur)
         {
             Carte map = new Carte();
 
@@ -417,6 +435,9 @@ namespace Vrac.GenerateurCarte
                     return Color.DarkGray;
                 case TypeElementBiome.Arbre:
                     return Color.Green;
+                case TypeElementBiome.Maison:
+                case TypeElementBiome.Route:
+                    return Color.White;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

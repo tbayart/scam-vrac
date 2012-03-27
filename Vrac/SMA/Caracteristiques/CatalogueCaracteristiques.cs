@@ -14,6 +14,8 @@ namespace Vrac.SMA.Comportements
         DistanceDeDeplacement,
         Solitude,
         LenteurEsprit,
+        Maison_Y,
+        Maison_X,
     }
 
     public class CatalogueCaracteristique
@@ -41,6 +43,16 @@ namespace Vrac.SMA.Comportements
         public static Caracteristique LenteurEsprit(int val)
         {
             return new Caracteristique { valeur = val, nom = LesCaracteristiques.LenteurEsprit.ToString() };
+        }
+
+        public static Caracteristique Maison_X(int val)
+        {
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.Maison_X.ToString() };
+        }
+
+        public static Caracteristique Maison_Y(int val)
+        {
+            return new Caracteristique { valeur = val, nom = LesCaracteristiques.Maison_Y.ToString() };
         }
     }
 }
