@@ -64,7 +64,7 @@ namespace VracAgent
             // Récupérer les agents qui sont à portée
             var q = Kernel.pagesBlanches.agents
                 .Where(
-                    a => e.Portee == -1 || e.emetteur.Coord.getDistance(a.Coord) < e.Portee && e.emetteur!=a
+                    a => e.Portee == -1 || Coordonnees.GetDistanceCarree(e.emetteur.Coord, a.Coord) < e.Portee * e.Portee && e.emetteur != a
                 );
             
             q.ToList().ForEach(
@@ -136,7 +136,7 @@ namespace VracAgent
             for (int i = 0; i < taille/32; i++)
             {
                 Dryad d = create<Dryad>();
-                d.Coord = new Coordonnees(Randomizer.Next((int)(taille * 0.05), (int)(taille * 0.95)), Randomizer.Next((int)(taille * 0.05), (int)(taille * 0.95)));
+                d.Coord = new Coordonnees(Randomizer.S_random.Next((int)(taille * 0.05), (int)(taille * 0.95)), Randomizer.S_random.Next((int)(taille * 0.05), (int)(taille * 0.95)));
             }
             Start();
         }
@@ -216,11 +216,11 @@ namespace VracAgent
                                 isHandler = (e, agent) => e == Evenement.NewTurn,
                                 handle = (e, agent) =>
                                              {
-                                                 Coordonnees newcoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-3, 3), agent.Coord.Y + Randomizer.Next(-3, 3));
+                                                 Coordonnees newcoord = new Coordonnees(agent.Coord.X + Randomizer.S_random.Next(-3, 3), agent.Coord.Y + Randomizer.S_random.Next(-3, 3));
                                                  newcoord.X = Math.Max(0, newcoord.X);
                                                  newcoord.X = Math.Min(Kernel.carte._carte.Length-1, newcoord.X);
                                                  newcoord.Y = Math.Max(0, newcoord.Y);
-                                                 newcoord.Y = Math.Min(Kernel.carte._carte[0].Length-1, newcoord.Y);
+                                                 newcoord.Y = Math.Min(Kernel.carte._carte.Length-1, newcoord.Y);
                                                  Resultat r = agent.Do("Teleport", agent, newcoord);
                                                  if (r == Resultat.Succes)
                                                  {

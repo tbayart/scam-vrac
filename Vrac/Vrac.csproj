@@ -76,7 +76,6 @@
     <Compile Include="Tools\HPT.cs" />
     <Compile Include="Tools\Distribution.cs" />
     <Compile Include="Tools\Randomizer.cs" />
-    <Compile Include="VracAgent.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

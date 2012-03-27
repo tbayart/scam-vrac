@@ -105,7 +105,7 @@ namespace Vrac.GenerateurCarte
             // On étend la carte tant qu'il y a de la place.
             while (lstElementsAEtendre.Count > 0)
             {
-                int i = Randomizer.Next(0, lstElementsAEtendre.Count);
+                int i = Randomizer.S_random.Next(0, lstElementsAEtendre.Count);
                 
                 Coordonnees coord = lstElementsAEtendre[i];
                 lstElementsAEtendre.RemoveAt(i);
@@ -257,8 +257,8 @@ namespace Vrac.GenerateurCarte
 
             for (int i = 0; i < nbEltsAPlacer; i++)
             {
-                int x = Randomizer.Next(0, largeur);
-                int y = Randomizer.Next(0, hauteur);
+                int x = Randomizer.S_random.Next(0, largeur);
+                int y = Randomizer.S_random.Next(0, hauteur);
 
                 this._carte[x][y] = distribElt.get();
 
@@ -396,8 +396,8 @@ namespace Vrac.GenerateurCarte
             if (this._carte == null || this._carte.Length <= 0 || this._carte[0] == null)
                 return null;
 
-            int hauteur = this._carte.Length;
-            int largeur = this._carte[0].Length;
+            int largeur = this._carte.Length;
+            int hauteur= this._carte[0].Length;
 
             Bitmap image = new Bitmap(largeur, hauteur);
             for (int i = 0; i < largeur; i++)
@@ -458,7 +458,7 @@ namespace Vrac.GenerateurCarte
 
         #endregion -> Attributs
 
-        public static CarteV2 GetCarteTest(int superficie)
+        public static Carte GetCarteTest(int superficie)
         {
             Distribution<byte> distCoteIni = new Distribution<byte>();
             distCoteIni.DicoSeuils[0] = 0.75d;
@@ -493,34 +493,44 @@ namespace Vrac.GenerateurCarte
             byte[][] carteTemp = EtapeInitiale(superficie * 60 / 100, 256, distribEtapeInitiale);
 
             // ----- DEBUG -----
-            DessinerCarte(carteTemp, 1, 256);
+            //DessinerCarte(carteTemp, 1, 256);
             // -----------------
 
             carteTemp = EtapeN(carteTemp, superficie * 20 / 100, 64, distribEtapeN);
 
             // ----- DEBUG -----
-            DessinerCarte(carteTemp, 2, 64);
+            //DessinerCarte(carteTemp, 2, 64);
             // -----------------
 
             carteTemp = EtapeN(carteTemp, superficie * 10 / 100, 16, distribEtapeN);
 
             // ----- DEBUG -----
-            DessinerCarte(carteTemp, 3, 16);
+            //DessinerCarte(carteTemp, 3, 16);
             // -----------------
 
             carteTemp = EtapeN(carteTemp, superficie * 7 / 100, 4, distribEtapeN);
 
             // ----- DEBUG -----
-            DessinerCarte(carteTemp, 4, 4);
+            //DessinerCarte(carteTemp, 4, 4);
             // -----------------
 
             carteTemp = OptimiserCarte(EtapeN(carteTemp, superficie * 3 / 100, 1, distribEtapeN));
 
             // ----- DEBUG -----
-            DessinerCarte(carteTemp, 5, 1);
+            //DessinerCarte(carteTemp, 5, 1);
             // -----------------
 
-            return null;
+            Carte c = new Carte();
+            c._carte = new TypeElementBiome[carteTemp.Length][];
+            for (int i = 0; i < carteTemp.Length; i++)
+            {
+                c._carte[i] = new TypeElementBiome[carteTemp[i].Length];
+                for (int j = 0; j < carteTemp[i].Length; j++)
+                {
+                    c._carte[i][j] = (TypeElementBiome) carteTemp[i][j];
+                }
+            }
+            return c;
         }
 
         private static void DessinerCarte(byte[][] carte, int etape, int largeurBlocs)
@@ -774,7 +784,7 @@ namespace Vrac.GenerateurCarte
             }
 
             // On lisse.
-            Lisser(ref carte);
+            //Lisser(ref carte);
 
             return OptimiserCarte(carte);
         }

@@ -80,10 +80,13 @@ namespace Vrac.SMA
 
         public void del(Agent agent)
         {
+            List<ISecteur> lst;
+            annuaire.TryGetValue(agent, out lst);
+
+            if(lst!=null)
+                lst.ForEach(s => s.Agents.Remove(agent));
             annuaire.Remove(agent);
             clAgents.Remove(agent);
-            this.Secteurs(agent.Coord, 0.1).ToList()
-                .ForEach(s => s.Agents.Remove(agent));
         }
 
         public void CreerSecteurPrincipal(int taille_Carte, int x_SecteurAcreer, int y_SecteurAcreer, int taille_secteur)
@@ -98,30 +101,30 @@ namespace Vrac.SMA
             SecteurPrincipal.CreerSecteurs(SecteurPrincipal, taille_secteur/4, true);
         }
 
-        public void DrawSecteurs()
+        public Bitmap DrawSecteurs()
         {
-            Bitmap bmp = Kernel.CarteManipulee.getBitmap();
-
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                Secteurs(null, -1).ToList().ForEach(s =>
-                                                                g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille))
-                    );
-            }
-
-            bmp.Save(@"./Temp/Secteurs.bmp");
-
-
-            Bitmap bmp2= Kernel.CarteManipulee.getBitmap();
+            Bitmap bmp2 = Kernel.CarteManipulee.getBitmap();
 
             using (Graphics g = Graphics.FromImage(bmp2))
             {
-                Secteurs(new Coordonnees(20, 50),10).ToList().ForEach(s =>
-                                                                g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille))
-                    );
+                Secteurs(null,-1).ToList().ForEach(s => g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille)));
+
             }
 
-            bmp2.Save(@"./Temp/Secteurs2.bmp");
+            return bmp2;
+        }
+        public Bitmap DrawSecteurs(Agent a)
+        {
+            Bitmap bmp2 = Kernel.CarteManipulee.getBitmap();
+
+            using (Graphics g = Graphics.FromImage(bmp2))
+            {
+                annuaire[a].ForEach(s => g.DrawEllipse(Pens.White, (float)(s.Centre.X - s.Taille), (float)(s.Centre.Y - s.Taille), (float)(2 * s.Taille), (float)(2 * s.Taille)));
+
+                g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2);
+            }
+
+            return bmp2;
         }
         #endregion --> Méthodes d'instance
     }

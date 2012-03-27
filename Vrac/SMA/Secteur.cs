@@ -59,7 +59,7 @@ namespace Vrac.SMA
                                                   {
                                                         double distanceCarree = s.Taille + distance;
                                                         distanceCarree *= distanceCarree;
-                                                      return s.Centre.getDistanceCarree(position) < distanceCarree;
+                                                        return Coordonnees.GetDistanceCarree(s.Centre,position) < distanceCarree;
                                                   }));
             }
 
@@ -92,9 +92,11 @@ namespace Vrac.SMA
             int y_SecteurAcreer = y_Carre;
 
             bool lastY = false;
+            bool stopY = false;
             do
             {
                 bool lastX = false;
+                bool stopX = false;
                 do
                 {
                     ISecteur enfant = CreerSecteur(parent, x_SecteurAcreer, y_SecteurAcreer, taille_secteur, encore);
@@ -102,24 +104,29 @@ namespace Vrac.SMA
                         CreerSecteurs(enfant, taille_secteur/4, false);
 
                     x_SecteurAcreer += (taille_secteur);
+                    if (lastX)
+                        stopX = true;
                     if (!lastX && x_SecteurAcreer > x_Carre + taille_Carre)
                     {
-                        x_SecteurAcreer = x_Carre + taille_Carre;
+                        //x_SecteurAcreer = x_Carre + taille_Carre;
                         lastX = true;
                     }
-                } while (x_SecteurAcreer <= x_Carre + taille_Carre);
-                
+                } while (!stopX); //x_SecteurAcreer <= x_Carre + taille_Carre);
+
                 x_SecteurAcreer = 0;
                 y_SecteurAcreer += (taille_secteur);
 
-                if (!lastY && y_SecteurAcreer> y_Carre + taille_Carre)
+                if (lastY)
+                    stopY = true;
+                if (!lastY && y_SecteurAcreer > y_Carre + taille_Carre)
                 {
-                    y_SecteurAcreer = y_Carre + taille_Carre;
+                    //y_SecteurAcreer = y_Carre + taille_Carre;
                     lastY = true;
                 }
-            } while (y_SecteurAcreer <= y_Carre + taille_Carre);
+            } while (!stopY);//y_SecteurAcreer <= y_Carre + taille_Carre);
 
         }
+        
         
         private ISecteur CreerSecteur(ISecteur parent, int xSecteurAcreer, int ySecteurAcreer, int tailleSecteur, bool secteurIntermediaire)
         {
@@ -128,13 +135,13 @@ namespace Vrac.SMA
                              (ISecteur) new Secteur()
                                                 {
                                                     Centre = new Coordonnees(xSecteurAcreer, ySecteurAcreer),
-                                                    Taille = tailleSecteur
+                                                    Taille = tailleSecteur*0.71
                                                 }
 
                              : (ISecteur) new FloorSecteur()
                                               {
                                                   Centre = new Coordonnees(xSecteurAcreer, ySecteurAcreer),
-                                                  Taille = tailleSecteur
+                                                  Taille = tailleSecteur * 0.71
                                               };
 
             ((Secteur)parent).clSecteurs.Add(s);

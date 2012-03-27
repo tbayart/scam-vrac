@@ -5,13 +5,13 @@
     /// </summary>
     public enum TypeElementBiome
     {
-        Vide,
+        Eau,
         Terre,
         Sable,
-        Eau,
         Pierre,
         Arbre,
         Maison,
         Route,
+        Vide,
     }
 }

@@ -7,7 +7,9 @@ using System.Threading;
 using Vrac;
 using Vrac.GenerateurCarte;
 using Vrac.SMA;
+using Vrac.SMA.Agents;
 using Vrac.SMA.Evenements;
+using Vrac.Tools;
 
 namespace ConsoleTest
 {
@@ -15,70 +17,42 @@ namespace ConsoleTest
     {
         //static void Main(string[] args)
         //{
-        //    Console.WriteLine("Heure début : {0}", DateTime.Now.ToLongTimeString());
-
-        //    //CarteV2 map = CarteV2.GetCarteTest(1500000);
-
-        //    for (int i = 0; i < 3; i++)
+        //    Kernel.Init();
+        //    Kernel.InitDryad();
+        //    for (int i = 0; i < 10000; i++)
         //    {
-        //        Carte map = Carte.GetCarteTest(750, 750);
+             
+        //    Coordonnees c1;
+        //    c1 = new Coordonnees(Randomizer.Next(1024),Randomizer.Next(1024));
+        //    HighPerfTimer.time(() => { var v = Kernel.PagesBlanches.Agents(c1,Randomizer.NextDouble()*100); }, "get agent");
 
-        //        File.Copy("./Temp/Finale.bmp", "./Temp/Finale" + i + ".bmp");
-
-        //        Console.WriteLine("ok {1} : {0}", DateTime.Now.ToLongTimeString(), i);
         //    }
-
-        //    Console.WriteLine("Heure fin   : {0}", DateTime.Now.ToLongTimeString());
-        //    Console.WriteLine("Terminé !");
-        //    Console.ReadLine();
         //}
-
-
 
         static void Main(string[] args)
         {
             Console.WriteLine("Heure début : {0}", DateTime.Now.ToLongTimeString());
 
-            //int test = 1;
+            int nbSec = 10;
+            Kernel.Init(1024,100);
 
-            //if (test == 1) // On utilise le nouveau code
-            {
-                //ThreadStart tsMgrEvts = ManagerEvenements.Start;
-                //Thread tMgrEvts = new Thread(tsMgrEvts);
-                //tMgrEvts.Start();
+            Kernel.PagesBlanches.DrawSecteurs().Save(@".\Temp\debug2.bmp");
 
-                int nbSec = 2;
-                Kernel.Init();
-                Kernel.InitCitizen();
-                Kernel.Start();
+            Kernel.InitDryad(100, 1024);
+            Kernel.Start();
+            Thread.Sleep(nbSec * 1000);
+            Kernel.Draw().Save(@".\Temp\debug3.bmp");
+            
+            Kernel.KillAll();
 
-                int precedenteValeur = 0;
-                for (int i = 0; i < nbSec; i++)
-                {
-                    Thread.Sleep(1000);
-                    int count = Kernel.managerEvenements.count;
-                    Console.WriteLine(count- precedenteValeur + " evt");
-                    precedenteValeur = count;
-                }
-                Kernel.KillAll();
+            Kernel.InitCitizen(100,1024);
+            Kernel.Start();
+            Thread.Sleep(nbSec * 1000);
 
-                Kernel.Draw().Save(@"./Temp/after.bmp");
+            Kernel.managerEvenements.Shutdown(true);
+            Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evt à la seconde pendant " + nbSec + " sec");
 
-                Kernel.managerEvenements.Shutdown(true);
-                Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evt à la seconde pendant " + nbSec + " sec");
-
-                //ManagerEvenements.Stop();
-            }
-            //else // On utilise le code de VracAgent.cs
-            //{
-            //    ThreadStart tsMgrEvts = VracAgent.EvtDispatcher.Start;
-            //    Thread tMgrEvts = new Thread(tsMgrEvts);
-            //    tMgrEvts.Start();
-
-            //    VracAgent.Kernel.Init();
-
-            //    VracAgent.EvtDispatcher.Stop();
-            //}
+            Kernel.Draw().Save(@".\Temp\debug.bmp");
 
             Console.WriteLine("Heure fin   : {0}", DateTime.Now.ToLongTimeString());
             Console.WriteLine("Terminé !");

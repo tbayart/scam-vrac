@@ -35,7 +35,8 @@ namespace Vrac.SMA.Capacites
         public Resultat doIt(Agent acteur, Agent cible, object param)
         {
             Resultat res = this.Proba.get();
-            this.Actions[res].doIt(acteur, cible, param);
+            this.Actions[res]
+                .doIt(acteur, cible, param);
 
             return res;
         }

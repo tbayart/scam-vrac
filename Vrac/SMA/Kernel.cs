@@ -29,31 +29,34 @@ namespace Vrac.SMA
         #region --> Méthodes statiques
 
 
-        public static void Init()
+        public static void Init(int tailleCarte, int nbThread)
         {
-            int taille = 1024;
-            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTerre(taille, taille);
+
+            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTerre(tailleCarte, tailleCarte);
+            //CarteManipulee = Vrac.GenerateurCarte.CarteV2.GetCarteTest(2000000);
+
+            int taille = Math.Max(CarteManipulee._carte.Length, CarteManipulee._carte[0].Length);
             PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
             //PagesBlanches.DrawSecteurs();
-            managerEvenements = new ManagerEvenements(150);
+            managerEvenements = new ManagerEvenements(nbThread);
 
             
         }
 
-        public static void InitDryad()
+        public static void InitDryad(int nb, int tailleCarte)
         {
-            for (int i = 0; i < 2500; i++) //taille * taille / 512
+            for (int i = 0; i < nb; i++) //taille * taille / 512
             {
-                Creer<Dryad>(1024);
+                Creer<Dryad>(tailleCarte);
             }
 
         }
 
-        public static void InitCitizen()
+        public static void InitCitizen(int nb, int tailleCarte)
         {
-            for (int i = 0; i < 25; i++) //taille * taille / 512
+            for (int i = 0; i < nb; i++) //taille * taille / 512
             {
-                Creer<Citizen>(1024);
+                Creer<Citizen>(tailleCarte);
             }
 
         }
@@ -95,7 +98,7 @@ namespace Vrac.SMA
         {
             T agt = new T
                         {
-                            Coord = new Coordonnees(Randomizer.Next((int) (taille*0.1), (int) (taille*0.90)), Randomizer.Next((int) (taille*0.1), (int) (taille*0.90)))
+                            Coord = new Coordonnees(Randomizer.S_random.Next(taille), Randomizer.S_random.Next(taille ))
                         };
 
             PagesBlanches.add(agt);

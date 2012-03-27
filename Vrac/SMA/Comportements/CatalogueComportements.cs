@@ -16,8 +16,6 @@ namespace Vrac.SMA.Comportements
 
         public static Comportement CitizenBuildRoad;
 
-
-
         public static Comportement DryadTurn;
 
         private static Comportement NearTo;
@@ -40,19 +38,20 @@ namespace Vrac.SMA.Comportements
                     if (agent.caracteristiques[LesCaracteristiques.Solitude].valeur > 20)
                         agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 6;
 
-                    if (Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Eau || Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Pierre)
-                        agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 10;
-
                     int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
+                    if (Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Eau || Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Pierre)
+                        dist <<= 2;
+
+
                     //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
-                    Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist+1), agent.Coord.Y + Randomizer.Next(-dist, dist+1));
+                    Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1));
 
 
                     newCoord.X = Math.Max(0, newCoord.X);
                     newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length-1, newCoord.X);
                     newCoord.Y = Math.Max(0, newCoord.Y);
-                    newCoord.Y = Math.Min(Kernel.CarteManipulee._carte[0].Length-1, newCoord.Y);
+                    newCoord.Y = Math.Min(Kernel.CarteManipulee._carte.Length-1, newCoord.Y);
                     
                     Resultat res = agent.Do(NomAction.Teleporter, agent, newCoord);
                     
@@ -68,7 +67,7 @@ namespace Vrac.SMA.Comportements
 
                     agent.caracteristiques[LesCaracteristiques.Solitude].valeur++;
 
-                    Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
+                    //Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
                     agent.Envoyer(new Evenement(agent, null, 0));
                 }
             };
@@ -109,12 +108,12 @@ namespace Vrac.SMA.Comportements
                                                    int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
                                                    //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
-                                                   Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.Next(-dist, dist + 1));
+                                                   Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1));
 
                                                    newCoord.X = Math.Max(0, newCoord.X);
                                                    newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length - 1, newCoord.X);
                                                    newCoord.Y = Math.Max(0, newCoord.Y);
-                                                   newCoord.Y = Math.Min(Kernel.CarteManipulee._carte[0].Length - 1, newCoord.Y);
+                                                   newCoord.Y = Math.Min(Kernel.CarteManipulee._carte.Length - 1, newCoord.Y);
 
                                                    Resultat res = agent.Do(NomAction.Teleporter, agent, newCoord);
 
@@ -125,7 +124,7 @@ namespace Vrac.SMA.Comportements
                                                    agent.caracteristiques[LesCaracteristiques.Maison_X] = CatalogueCaracteristique.Maison_X(Kernel.CarteManipulee._carte.Length / 2);
                                                    agent.caracteristiques[LesCaracteristiques.Maison_Y] = CatalogueCaracteristique.Maison_Y(Kernel.CarteManipulee._carte.Length / 2);
 
-                                                   Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
+                                                   //Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
                                                    agent.Envoyer(new Evenement(agent, null, 0));
                                                }
                               };
@@ -154,7 +153,7 @@ namespace Vrac.SMA.Comportements
                                      agent.Do(NomAction.Teleporter, agent, new Coordonnees(agent.Coord.X + (offset_x == 0 ? offset_x : (offset_x / Math.Abs(offset_x))), agent.Coord.Y + (offset_y == 0 ? offset_y : (offset_y / Math.Abs(offset_y)))));
                                  }
 
-                                Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
+                                //Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
                                 agent.Envoyer(new Evenement(agent, null, 0));
                              }
             };

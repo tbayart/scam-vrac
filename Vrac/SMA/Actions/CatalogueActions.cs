@@ -73,7 +73,7 @@ namespace Vrac.SMA.Actions
                             if (c.X + i > 0
                                 && c.Y + j > 0
                                 && c.X + i < Kernel.CarteManipulee._carte.Length
-                                && c.Y + j < Kernel.CarteManipulee._carte.Length
+                                && c.Y + j < Kernel.CarteManipulee._carte[0].Length
                                 && (i!=0 && j!=0)
                                 )
                             Kernel.CarteManipulee._carte[c.X+i][c.Y+j] = Vrac.GenerateurCarte.TypeElementBiome.Maison;

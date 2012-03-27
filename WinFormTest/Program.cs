@@ -19,7 +19,7 @@ namespace WinFormTest
             //Thread kThrd = new Thread(kst);
             //kThrd.Start();
 
-            Kernel.Init();
+            Kernel.Init(1024,100);
            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
