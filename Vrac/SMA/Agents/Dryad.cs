@@ -28,7 +28,7 @@ namespace Vrac.SMA.Agents
 
             caracteristiques[LesCaracteristiques.DistanceDeDeplacement] = CatalogueCaracteristique.DistanceDeDeplacement(6);
             caracteristiques[LesCaracteristiques.Solitude] = CatalogueCaracteristique.Solitude(1);
-            caracteristiques[LesCaracteristiques.LenteurEsprit] = CatalogueCaracteristique.LenteurEsprit(1);
+            caracteristiques[LesCaracteristiques.LenteurEsprit] = CatalogueCaracteristique.LenteurEsprit(100);
         }
 
         #endregion --> Constructeurs

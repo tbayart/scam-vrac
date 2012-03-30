@@ -18,7 +18,7 @@ namespace Vrac.SMA.Comportements
 
         public static Comportement DryadTurn;
 
-        private static Comportement NearTo;
+        public static Comportement NearTo;
 
         #region --> Constructeurs
 
@@ -36,16 +36,20 @@ namespace Vrac.SMA.Comportements
                 {
                     //ThreadPool.QueueUserWorkItem(HighPerfTimer.timePoint,agent.id.ToString());
                     if (agent.caracteristiques[LesCaracteristiques.Solitude].valeur > 20)
-                        agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 6;
+                        agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 8;
 
                     int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
                     if (Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Eau || Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Pierre)
-                        dist <<= 2;
+                        dist *= 4;
 
 
                     //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
-                    Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1));
+                    Coordonnees newCoord = 
+                        new Coordonnees(
+                            agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), 
+                            agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1)
+                            );
 
 
                     newCoord.X = Math.Max(0, newCoord.X);
@@ -56,14 +60,7 @@ namespace Vrac.SMA.Comportements
                     Resultat res = agent.Do(NomAction.Teleporter, agent, newCoord);
                     
                     if (res == Resultat.Succes)
-                    {
-                        //lock (semaphore.sema)
-                        //{
-                        //    File.AppendAllText("C:/Trace.txt", agent.id + "(" + oldCoord + ") move by " + dist + " to " + newCoord + Environment.NewLine);
-                        //}
-
                         agent.Do(NomAction.Parler, agent, new Evt_Deplace(agent, agent.Coord.X, agent.Coord.Y));
-                    }
 
                     agent.caracteristiques[LesCaracteristiques.Solitude].valeur++;
 
@@ -82,16 +79,19 @@ namespace Vrac.SMA.Comportements
                         return;
 
                     agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 1;
-                    agent.caracteristiques[LesCaracteristiques.Solitude].valeur >>= 3;
+                    agent.caracteristiques[LesCaracteristiques.Solitude].valeur = 3;
                     Resultat res = agent.Do(NomAction.Planter, agent, new Coordonnees(agent.Coord.X, agent.Coord.Y));
 
-                    if (res == Resultat.Succes)
-                    {
-                        Resultat resMort = agent.Do(NomAction.Mourir, agent, null);
+                    //Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
+                    //agent.Envoyer(new Evenement(agent, null, 0));
 
-                        if (resMort == Resultat.Succes)
-                            agent.Do(NomAction.Parler, agent, new Evt_Mort(agent));
-                    }
+                    if (res != Resultat.Succes)
+                        return;
+
+                    Resultat resMort = agent.Do(NomAction.Mourir, agent, null);
+
+                    if (resMort == Resultat.Succes)
+                        agent.Do(NomAction.Parler, agent, new Evt_Mort(agent));
                 }
             };
 

@@ -36,23 +36,27 @@ namespace ConsoleTest
             int nbSec = 10;
             Kernel.Init(1024,100);
 
-            Kernel.PagesBlanches.DrawSecteurs().Save(@".\Temp\debug2.bmp");
+            Kernel.PagesBlanches.DrawSecteurs().Save(@".\Temp\debugS.bmp");
 
             Kernel.InitDryad(100, 1024);
             Kernel.Start();
-            Thread.Sleep(nbSec * 1000);
-            Kernel.Draw().Save(@".\Temp\debug3.bmp");
+
+            for (int i = 0; i < nbSec; i++)
+            {
+
+                Kernel.Draw().Save(@".\Temp\debug"+i+".bmp");  
+            }
             
             Kernel.KillAll();
 
-            Kernel.InitCitizen(100,1024);
-            Kernel.Start();
-            Thread.Sleep(nbSec * 1000);
+            //Kernel.InitCitizen(100,1024);
+            //Kernel.Start();
+            //Thread.Sleep(nbSec * 1000);
 
             Kernel.managerEvenements.Shutdown(true);
             Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evt à la seconde pendant " + nbSec + " sec");
 
-            Kernel.Draw().Save(@".\Temp\debug.bmp");
+            Kernel.Draw().Save(@".\Temp\debugF.bmp");
 
             Console.WriteLine("Heure fin   : {0}", DateTime.Now.ToLongTimeString());
             Console.WriteLine("Terminé !");

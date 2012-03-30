@@ -60,14 +60,11 @@ namespace Vrac.SMA
 
         public void majAgent(Agent a)
         {
-            if (!this.annuaire.ContainsKey(a))
-                newAgent(a);
-            else
-            {
-                this.annuaire[a].ForEach(s => s.Agents.Remove(a));
-                this.annuaire[a] = this.Secteurs(a.Coord, 0.1).ToList();
-                this.annuaire[a].ForEach(s => s.Agents.Add(a));
-            }
+            if (!this.annuaire.ContainsKey(a)) return;
+
+            this.annuaire[a].ForEach(s => s.Agents.Remove(a));
+            this.annuaire[a] = this.Secteurs(a.Coord, 0.1).ToList();
+            this.annuaire[a].ForEach(s => s.Agents.Add(a));
         }
 
         public void add(Agent agent)

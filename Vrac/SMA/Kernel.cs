@@ -85,6 +85,9 @@ namespace Vrac.SMA
                 PagesBlanches.Agents(null, -1).ToList().ForEach(a =>
                                                                 g.DrawEllipse(Pens.White, a.Coord.X - 1, a.Coord.Y - 1, 2, 2)
                     );
+                PagesBlanches.Agents(new Coordonnees(512,512), 1000).ToList().ForEach(a =>
+                                                                g.DrawEllipse(Pens.Yellow, a.Coord.X - 2, a.Coord.Y - 2, 4, 4)
+                    );
             }
             return bmp;
         }

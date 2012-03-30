@@ -18,8 +18,8 @@ namespace Vrac.SMA.Capacites
             { 
                 DicoSeuils = new Dictionary<Resultat, double>() 
                 { 
-                    { Resultat.Echec, 0.85d }, 
-                    { Resultat.Succes, 0.15d }
+                    { Resultat.Echec, 0.999d }, 
+                    { Resultat.Succes, 0.001d }
                 } 
             };
             
