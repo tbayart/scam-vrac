@@ -105,7 +105,7 @@ namespace Vrac.GenerateurCarte
             // On étend la carte tant qu'il y a de la place.
             while (lstElementsAEtendre.Count > 0)
             {
-                int i = Randomizer.S_random.Next(0, lstElementsAEtendre.Count);
+                int i = Randomizer.Next(0, lstElementsAEtendre.Count);
                 
                 Coordonnees coord = lstElementsAEtendre[i];
                 lstElementsAEtendre.RemoveAt(i);
@@ -257,8 +257,8 @@ namespace Vrac.GenerateurCarte
 
             for (int i = 0; i < nbEltsAPlacer; i++)
             {
-                int x = Randomizer.S_random.Next(0, largeur);
-                int y = Randomizer.S_random.Next(0, hauteur);
+                int x = Randomizer.Next(0, largeur);
+                int y = Randomizer.Next(0, hauteur);
 
                 this._carte[x][y] = distribElt.get();
 

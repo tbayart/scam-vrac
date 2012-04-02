@@ -47,8 +47,8 @@ namespace Vrac.SMA.Comportements
                     //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
                     Coordonnees newCoord = 
                         new Coordonnees(
-                            agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), 
-                            agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1)
+                            agent.Coord.X + Randomizer.Next(-dist, dist + 1), 
+                            agent.Coord.Y + Randomizer.Next(-dist, dist + 1)
                             );
 
 
@@ -108,7 +108,7 @@ namespace Vrac.SMA.Comportements
                                                    int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
                                                    //Coordonnees oldCoord = new Coordonnees(agent.Coord.X, agent.Coord.Y); 
-                                                   Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.S_random.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.S_random.Next(-dist, dist + 1));
+                                                   Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.Next(-dist, dist + 1));
 
                                                    newCoord.X = Math.Max(0, newCoord.X);
                                                    newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length - 1, newCoord.X);

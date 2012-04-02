@@ -28,7 +28,7 @@ namespace Vrac.Tools
 
         public T get()
         {
-            double d = Randomizer.S_random.NextDouble();
+            double d = Randomizer.NextDouble();
             double sommeSeuils = 0;
 
             foreach (var info in this.DicoSeuils)

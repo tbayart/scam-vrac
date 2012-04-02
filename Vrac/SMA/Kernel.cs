@@ -101,7 +101,7 @@ namespace Vrac.SMA
         {
             T agt = new T
                         {
-                            Coord = new Coordonnees(Randomizer.S_random.Next(taille), Randomizer.S_random.Next(taille ))
+                            Coord = new Coordonnees(Randomizer.Next(taille), Randomizer.Next(taille ))
                         };
 
             PagesBlanches.add(agt);

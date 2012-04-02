@@ -38,7 +38,7 @@ namespace ConsoleTest
 
             Kernel.PagesBlanches.DrawSecteurs().Save(@".\Temp\debugS.bmp");
 
-            Kernel.InitDryad(100, 1024);
+            Kernel.InitDryad(1000, 1024);
             Kernel.Start();
 
             for (int i = 0; i < nbSec; i++)
