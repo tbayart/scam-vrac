@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Tools;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Resultats;
-using Vrac.Tools;
 
 namespace Vrac.SMA.Capacites
 {

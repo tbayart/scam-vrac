@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Vrac.SMA.Agents;
-using Vrac.Tools;
+using Tools;
 
 namespace Vrac.SMA
 {

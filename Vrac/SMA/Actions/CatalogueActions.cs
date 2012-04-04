@@ -1,6 +1,7 @@
 ﻿using System;
+using ScamCarte.Cartes;
+using Tools;
 using Vrac.SMA.Evenements;
-using Vrac.Tools;
 
 namespace Vrac.SMA.Actions
 {
@@ -41,7 +42,7 @@ namespace Vrac.SMA.Actions
                 doIt = (acteur, cible, coord) =>
                 {
                     Coordonnees c = ((Coordonnees)coord);
-                    Kernel.CarteManipulee._carte[c.X][c.Y] = Vrac.GenerateurCarte.TypeElementBiome.Arbre;
+                    Kernel.CarteManipulee.Elements[c.X][c.Y].ElementBiome = TypeElementBiome.Arbre;
                 }
             };
 
@@ -52,7 +53,7 @@ namespace Vrac.SMA.Actions
                     Coordonnees c = ((Coordonnees)coord);
                     try
                     {
-                        Kernel.CarteManipulee._carte[c.X][c.Y] = Vrac.GenerateurCarte.TypeElementBiome.Route;
+                        Kernel.CarteManipulee.Elements[c.X][c.Y].ElementBiome = TypeElementBiome.Route;
                         
                     }
                     catch (Exception ex)
@@ -72,11 +73,11 @@ namespace Vrac.SMA.Actions
                         {
                             if (c.X + i > 0
                                 && c.Y + j > 0
-                                && c.X + i < Kernel.CarteManipulee._carte.Length
-                                && c.Y + j < Kernel.CarteManipulee._carte[0].Length
+                                && c.X + i < Kernel.CarteManipulee.Largeur
+                                && c.Y + j < Kernel.CarteManipulee.Hauteur
                                 && (i!=0 && j!=0)
                                 )
-                            Kernel.CarteManipulee._carte[c.X+i][c.Y+j] = Vrac.GenerateurCarte.TypeElementBiome.Maison;
+                                Kernel.CarteManipulee.Elements[c.X + i][c.Y + j].ElementBiome = TypeElementBiome.Maison;
                         }
                     }
                 }

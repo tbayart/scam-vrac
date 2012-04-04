@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Threading;
-using Vrac.GenerateurCarte;
+using ScamCarte.Cartes;
+using Tools;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Caracteristiques;
 using Vrac.SMA.Evenements;
 using Vrac.SMA.Resultats;
-using Vrac.Tools;
 
 namespace Vrac.SMA.Comportements
 {
@@ -40,7 +38,8 @@ namespace Vrac.SMA.Comportements
 
                     int dist = agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur;
 
-                    if (Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Eau || Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Pierre)
+                    if (Kernel.CarteManipulee.Elements[agent.Coord.X][agent.Coord.Y].ElementBiome == TypeElementBiome.Eau
+                        || Kernel.CarteManipulee.Elements[agent.Coord.X][agent.Coord.Y].ElementBiome == TypeElementBiome.Pierre)
                         dist *= 4;
 
 
@@ -53,9 +52,9 @@ namespace Vrac.SMA.Comportements
 
 
                     newCoord.X = Math.Max(0, newCoord.X);
-                    newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length-1, newCoord.X);
+                    newCoord.X = Math.Min(Kernel.CarteManipulee.Largeur-1, newCoord.X);
                     newCoord.Y = Math.Max(0, newCoord.Y);
-                    newCoord.Y = Math.Min(Kernel.CarteManipulee._carte.Length-1, newCoord.Y);
+                    newCoord.Y = Math.Min(Kernel.CarteManipulee.Hauteur-1, newCoord.Y);
                     
                     Resultat res = agent.Do(NomAction.Teleporter, agent, newCoord);
                     
@@ -75,7 +74,8 @@ namespace Vrac.SMA.Comportements
                 IsHandler = (e, agent) => e is Evt_Deplace,
                 Handle = (e, agent) =>
                 {
-                    if (Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Eau || Kernel.CarteManipulee._carte[agent.Coord.X][agent.Coord.Y] == TypeElementBiome.Pierre)
+                    if (Kernel.CarteManipulee.Elements[agent.Coord.X][agent.Coord.Y].ElementBiome == TypeElementBiome.Eau
+                        || Kernel.CarteManipulee.Elements[agent.Coord.X][agent.Coord.Y].ElementBiome == TypeElementBiome.Pierre)
                         return;
 
                     agent.caracteristiques[LesCaracteristiques.DistanceDeDeplacement].valeur = 1;
@@ -111,9 +111,9 @@ namespace Vrac.SMA.Comportements
                                                    Coordonnees newCoord = new Coordonnees(agent.Coord.X + Randomizer.Next(-dist, dist + 1), agent.Coord.Y + Randomizer.Next(-dist, dist + 1));
 
                                                    newCoord.X = Math.Max(0, newCoord.X);
-                                                   newCoord.X = Math.Min(Kernel.CarteManipulee._carte.Length - 1, newCoord.X);
+                                                   newCoord.X = Math.Min(Kernel.CarteManipulee.Largeur - 1, newCoord.X);
                                                    newCoord.Y = Math.Max(0, newCoord.Y);
-                                                   newCoord.Y = Math.Min(Kernel.CarteManipulee._carte.Length - 1, newCoord.Y);
+                                                   newCoord.Y = Math.Min(Kernel.CarteManipulee.Hauteur - 1, newCoord.Y);
 
                                                    Resultat res = agent.Do(NomAction.Teleporter, agent, newCoord);
 
@@ -121,8 +121,8 @@ namespace Vrac.SMA.Comportements
                                                        agent.Do(NomAction.Construire, agent, agent.Coord);
 
                                                    // MaisonAutour ? 
-                                                   agent.caracteristiques[LesCaracteristiques.Maison_X] = CatalogueCaracteristique.Maison_X(Kernel.CarteManipulee._carte.Length / 2);
-                                                   agent.caracteristiques[LesCaracteristiques.Maison_Y] = CatalogueCaracteristique.Maison_Y(Kernel.CarteManipulee._carte.Length / 2);
+                                                   agent.caracteristiques[LesCaracteristiques.Maison_X] = CatalogueCaracteristique.Maison_X(Kernel.CarteManipulee.Largeur / 2);
+                                                   agent.caracteristiques[LesCaracteristiques.Maison_Y] = CatalogueCaracteristique.Maison_Y(Kernel.CarteManipulee.Hauteur / 2);
 
                                                    //Thread.Sleep(agent.caracteristiques[LesCaracteristiques.LenteurEsprit].valeur);
                                                    agent.Envoyer(new Evenement(agent, null, 0));

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿/*
+using System.Collections.Generic;
 using Vrac.Tools;
 
 namespace Vrac.GenerateurCarte.Biomes
@@ -127,3 +128,4 @@ namespace Vrac.GenerateurCarte.Biomes
         }
     }
 }
+*/

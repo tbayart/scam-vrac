@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Tools;
 using Vrac.SMA.Agents;
-using Vrac.Tools;
 
 namespace Vrac.SMA
 {

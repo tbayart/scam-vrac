@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tools;
 using Vrac.SMA.Actions;
 using Vrac.SMA.Capacites;
 using Vrac.SMA.Caracteristiques;
 using Vrac.SMA.Comportements;
 using Vrac.SMA.Evenements;
 using Vrac.SMA.Resultats;
-using Vrac.Tools;
 
 namespace Vrac.SMA.Agents
 {

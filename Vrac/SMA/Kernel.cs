@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Threading;
+using ScamCarte;
+using ScamCarte.Cartes;
+using Tools;
 using Vrac.SMA.Agents;
 using Vrac.SMA.Evenements;
-using Vrac.Tools;
 
 namespace Vrac.SMA
 {
     public static class Kernel
     {
-        // TODO: Voir pour ne pas référencer directement Vrac.GenerateurCarte.Carte.
-        // --> Déplacer Carte ?
-
         #region --> Attributs
 
         public static ManagerEvenements managerEvenements;
 
         public static Annuaire PagesBlanches = new Annuaire();
 
-        public static Vrac.GenerateurCarte.Carte CarteManipulee;
+        public static Carte CarteManipulee;
 
         private static bool S_Stop = false;
 
@@ -29,13 +26,12 @@ namespace Vrac.SMA
         #region --> Méthodes statiques
 
 
-        public static void Init(int tailleCarte, int nbThread)
+        public static void Init(int superficieCarte, int nbThread)
         {
 
-            CarteManipulee = Vrac.GenerateurCarte.Carte.GetCarteTerre(tailleCarte, tailleCarte);
-            //CarteManipulee = Vrac.GenerateurCarte.CarteV2.GetCarteTest(2000000);
+            CarteManipulee = GenerateurCarte.GenererNouvelleCarte(superficieCarte);
 
-            int taille = Math.Max(CarteManipulee._carte.Length, CarteManipulee._carte[0].Length);
+            int taille = Math.Max(CarteManipulee.Largeur, CarteManipulee.Hauteur);
             PagesBlanches.CreerSecteurPrincipal(taille, taille / 2, taille / 2, (int)(Math.Sqrt(2)*taille)+1);
             //PagesBlanches.DrawSecteurs();
             managerEvenements = new ManagerEvenements(nbThread);
@@ -43,20 +39,20 @@ namespace Vrac.SMA
             
         }
 
-        public static void InitDryad(int nb, int tailleCarte)
+        public static void InitDryad(int nb)
         {
             for (int i = 0; i < nb; i++) //taille * taille / 512
             {
-                Creer<Dryad>(tailleCarte);
+                Creer<Dryad>();
             }
 
         }
 
-        public static void InitCitizen(int nb, int tailleCarte)
+        public static void InitCitizen(int nb)
         {
             for (int i = 0; i < nb; i++) //taille * taille / 512
             {
-                Creer<Citizen>(tailleCarte);
+                Creer<Citizen>();
             }
 
         }
@@ -97,12 +93,13 @@ namespace Vrac.SMA
             S_Stop = true;
         }
 
-        public static T Creer<T>(int taille) where T : Agent, new()
+        public static T Creer<T>() where T : Agent, new()
         {
             T agt = new T
-                        {
-                            Coord = new Coordonnees(Randomizer.Next(taille), Randomizer.Next(taille ))
-                        };
+                {
+                    Coord = new Coordonnees(Randomizer.Next(CarteManipulee.Largeur), 
+                                            Randomizer.Next(CarteManipulee.Hauteur))
+                };
 
             PagesBlanches.add(agt);
 

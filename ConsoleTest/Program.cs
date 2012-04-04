@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Vrac;
-using Vrac.GenerateurCarte;
 using Vrac.SMA;
 using Vrac.SMA.Agents;
 using Vrac.SMA.Evenements;
-using Vrac.Tools;
+using Tools;
 
 namespace ConsoleTest
 {
@@ -31,14 +30,19 @@ namespace ConsoleTest
 
         static void Main(string[] args)
         {
+            if (Directory.Exists(@".\Temp\"))
+                Directory.Delete(@".\Temp\", true);
+
+            Directory.CreateDirectory(@".\Temp\");
+
             Console.WriteLine("Heure début : {0}", DateTime.Now.ToLongTimeString());
 
             int nbSec = 10;
-            Kernel.Init(1024,100);
+            Kernel.Init(500000,100);
 
             Kernel.PagesBlanches.DrawSecteurs().Save(@".\Temp\debugS.bmp");
 
-            Kernel.InitDryad(1000, 1024);
+            Kernel.InitDryad(1000);
             Kernel.Start();
 
             for (int i = 0; i < nbSec; i++)
@@ -54,7 +58,7 @@ namespace ConsoleTest
             //Thread.Sleep(nbSec * 1000);
 
             Kernel.managerEvenements.Shutdown(true);
-            Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evt à la seconde pendant " + nbSec + " sec");
+            Console.WriteLine(Kernel.managerEvenements.count / nbSec + " evts à la seconde pendant " + nbSec + " sec");
 
             Kernel.Draw().Save(@".\Temp\debugF.bmp");
 

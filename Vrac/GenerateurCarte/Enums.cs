@@ -1,4 +1,5 @@
-﻿namespace Vrac.GenerateurCarte
+﻿/*
+namespace Vrac.GenerateurCarte
 {
     /// <summary>
     /// Les types possibles pour les éléments composant un biome.
@@ -15,3 +16,4 @@
         Vide,
     }
 }
+*/

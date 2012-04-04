@@ -3,7 +3,7 @@ using Vrac.SMA.Actions;
 using Vrac.SMA.Caracteristiques;
 using Vrac.SMA.Evenements;
 using Vrac.SMA.Resultats;
-using Vrac.Tools;
+using Tools;
 
 namespace Vrac.SMA.Comportements
 {
